@@ -136,7 +136,7 @@
 
 class TroykaOLED {
 public:
-    TroykaOLED (uint8_t address = 0x3C, uint8_t width = 128, uint8_t higth = 64);
+    TroykaOLED (uint8_t address = 0x3C, uint8_t width = 128, uint8_t heigth = 64);
     void begin(TwoWire* wire = &Wire);
     void update();
     void autoUpdate(bool stateAutoUpdate = true);
