@@ -1,0 +1,55 @@
+#######################################
+# Syntax Coloring Map TroykaOLED
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TroykaOLED	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin 				KEYWORD2
+update 				KEYWORD2
+autoUpdate 			KEYWORD2
+setBrigtness 		KEYWORD2
+clearDisplay 		KEYWORD2
+invertDisplay 		KEYWORD2
+invertText 			KEYWORD2
+bgText 				KEYWORD2
+bgImage				KEYWORD2
+setFont 			KEYWORD2
+setCoding 			KEYWORD2
+setCursor 			KEYWORD2
+print 				KEYWORD2
+drawPixel 			KEYWORD2
+drawLine 			KEYWORD2
+drawRect 			KEYWORD2
+drawCircle 			KEYWORD2
+drawImage 			KEYWORD2
+getPixel 			KEYWORD2
+getWidth 			KEYWORD2
+getHeigth 			KEYWORD2
+getFontWidth 		KEYWORD2
+getFontHeight 		KEYWORD2
+getImageWidth 		KEYWORD2
+getImageHeight 		KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+OLED_TOP	LITERAL1
+OLED_BOTTOM	LITERAL1
+OLED_LEFT	LITERAL1
+OLED_RIGHT	LITERAL1
+OLED_CENTER	LITERAL1
+OLED_THIS	LITERAL1
+IMG_RAM	LITERAL1
+IMG_ROM	LITERAL1
+TXT_UTF8	LITERAL1
+TXT_CP866	LITERAL1
+TXT_WIN1251	LITERAL1
