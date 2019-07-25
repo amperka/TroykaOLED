@@ -174,6 +174,12 @@ void TroykaOLED::setCursor(int numX, int numY) {
     }
 }
 
+void TroykaOLED::print(char data, int x, int y){
+	char* next = &data + 1;
+    *next = '\0';
+	_print(_codingCP866(&data), x, y);
+}
+
 void TroykaOLED::print(char* data, int x, int y) {
     _print(_codingCP866(data), x, y);
 }

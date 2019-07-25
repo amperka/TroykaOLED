@@ -149,6 +149,7 @@ public:
     void setFont(const uint8_t* fontData);
     void setCoding(uint8_t codingName = false);
     void setCursor(int numX, int numY);
+    void print(char data, int x, int y);
     void print(char* s, int x = OLED_THIS, int y = OLED_THIS);
     void print(const char* s, int x = OLED_THIS, int y = OLED_THIS);
     void print(String s , int x = OLED_THIS, int y = OLED_THIS);
