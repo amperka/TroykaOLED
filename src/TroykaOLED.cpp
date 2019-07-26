@@ -174,12 +174,6 @@ void TroykaOLED::setCursor(int numX, int numY) {
     }
 }
 
-void TroykaOLED::print(char data, int x, int y) {
-    char* next = &data + 1;
-    *next = '\0';
-    _print(_codingCP866(&data), x, y);
-}
-
 void TroykaOLED::print(char* data, int x, int y) {
     _print(_codingCP866(data), x, y);
 }
@@ -188,6 +182,12 @@ void TroykaOLED::print(String str, int x, int y) {
     char data[str.length() + 1];
     str.toCharArray(data, str.length() + 1);
     _print(_codingCP866(data), x, y);
+}
+
+void TroykaOLED::print(char data, int x, int y) {
+    String s;
+    s += data;
+    print(s, x, y);
 }
 
 void TroykaOLED::print(const char* str, int x, int y) {
