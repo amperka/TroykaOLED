@@ -178,6 +178,11 @@ void TroykaOLED::print(char* data, int x, int y) {
     _print(_codingCP866(data), x, y);
 }
 
+void TroykaOLED::print(char ch, int x, int y) {
+    char buff[2] = { ch, 0x00 };
+    _print(_codingCP866(buff), x, y);
+}
+
 void TroykaOLED::print(String str, int x, int y) {
     char data[str.length() + 1];
     str.toCharArray(data, str.length() + 1);
