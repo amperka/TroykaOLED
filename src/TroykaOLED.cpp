@@ -10,7 +10,7 @@
 
 #include "TroykaOLED.h"
 
-TroykaOLED::TroykaOLED (uint8_t i2cAddress, uint8_t width, uint8_t height) {
+TroykaOLED::TroykaOLED(uint8_t i2cAddress, uint8_t width, uint8_t height) {
     _i2cAddress = i2cAddress;
     _width = width;
     _height = height;
@@ -56,12 +56,12 @@ void TroykaOLED::begin(TwoWire* wire) {
     _sendCommand(0xFF);
     // настраиваем схему DC/DC преобразователя (0xF1 - Vcc снимается с DC/DC преобразователя, 0x22 - Vcc подается извне)
     _sendCommand(SSD1306_SET_PRECHARGE_PERIOD);
-    _sendCommand(0xF1);	
+    _sendCommand(0xF1);
     // устанавливаем питание светодиодов VcomH в значение выше чем по умолчанию: 0x30
     // это увеличит яркость дисплея
     // допустимые значения: 0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70
     _sendCommand(SSD1306_SET_VCOM_DESELECT);
-    _sendCommand(0x40);	
+    _sendCommand(0x40);
     // разрешаем отображать содержимое RAM памяти
     _sendCommand(SSD1306_RAM_ON);
     // отключаем инверсию
@@ -88,13 +88,13 @@ void TroykaOLED::setBrigtness(uint8_t brigtness) {
 void TroykaOLED::clearDisplay() {
     memset(_bufferDisplay, 0, _width * _height / 8);
 
-    if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
 }
 
 void TroykaOLED::invertDisplay(bool stateInvert) {
-    if(stateInvert) {
+    if (stateInvert) {
         _stateInvert = true;
         _sendCommand(SSD1306_INVERT_ON);
     } else {
@@ -103,15 +103,15 @@ void TroykaOLED::invertDisplay(bool stateInvert) {
     }
 }
 
-void TroykaOLED::invertText (bool stateInvertText) {
+void TroykaOLED::invertText(bool stateInvertText) {
     _font.invert = stateInvertText;
 }
 
-void TroykaOLED::bgText (bool stateTextBG) {
+void TroykaOLED::bgText(bool stateTextBG) {
     _font.background = stateTextBG;
 }
 
-void TroykaOLED::bgImage (bool stateImageBG) {
+void TroykaOLED::bgImage(bool stateImageBG) {
     _stateImageBG = stateImageBG;
 }
 
@@ -129,7 +129,7 @@ void TroykaOLED::setFont(const uint8_t* fontData) {
     //  устанавливаем флаг выбора шрифта
     _font.setFont = true;
     // определяем позицию бита указывающего количество пустых интервалов в массиве шрифта.
-    uint16_t i = (uint16_t) _font.sumSymbol * _font.width * _font.height / 8 + 0x04;
+    uint16_t i = (uint16_t)_font.sumSymbol * _font.width * _font.height / 8 + 0x04;
     // определяем количество пустых интервалов в массиве шрифта.
     uint16_t j = pgm_read_byte(&fontData[i]);
     // указываем что первый пустой интервал в массиве шрифта находится после символа с кодом (0xFF) и состоит из 0 символов
@@ -166,10 +166,10 @@ void TroykaOLED::setCoding(uint8_t codingName) {
 }
 
 void TroykaOLED::setCursor(int numX, int numY) {
-    if(numX < _width) {
+    if (numX < _width) {
         _numX = numX;
     }
-    if(numY < _height) {
+    if (numY < _height) {
         _numY = numY;
     }
 }
@@ -178,10 +178,21 @@ void TroykaOLED::print(char* data, int x, int y) {
     _print(_codingCP866(data), x, y);
 }
 
+void TroykaOLED::print(char ch, int x, int y) {
+    char buff[2] = { ch, 0x00 };
+    _print(_codingCP866(buff), x, y);
+}
+
 void TroykaOLED::print(String str, int x, int y) {
     char data[str.length() + 1];
     str.toCharArray(data, str.length() + 1);
     _print(_codingCP866(data), x, y);
+}
+
+void TroykaOLED::print(char data, int x, int y) {
+    String s;
+    s += data;
+    print(s, x, y);
 }
 
 void TroykaOLED::print(const char* str, int x, int y) {
@@ -222,25 +233,26 @@ void TroykaOLED::print(int32_t num, int x, int y, uint8_t base) {
     i--;
     k[i] = 0;
     i--;
-    if(num > 0) {
+    if (num > 0) {
         k[i] = 0;
         i--;
     }
     // создаём строку k из i символов и добавляем символ(ы) конца строки
-    uint32_t n = num < 0 ? num*-1 : num;
+    uint32_t n = num < 0 ? num * -1 : num;
     while (i) {
-        k[i]=_itoa(n % base);
-        n /= base; i--;
+        k[i] = _itoa(n % base);
+        n /= base;
+        i--;
     }
     // заполняем строку k
-    if (num >= 0) { 
-        k[i]=_itoa(n % base);
-    } else { 
-        k[i]='-';
+    if (num >= 0) {
+        k[i] = _itoa(n % base);
+    } else {
+        k[i] = '-';
     }
     //	добавляем первый символ (либо первая цифра, либо знак минус)
     //  выводим строку k
-	print(k, x, y);																								
+    print(k, x, y);
 }
 
 void TroykaOLED::print(uint32_t num, int x, int y, uint8_t base) {
@@ -249,7 +261,7 @@ void TroykaOLED::print(uint32_t num, int x, int y, uint8_t base) {
     int8_t i = 1;
     uint32_t j = 1;
     while (num / j) {
-        j *= base; 
+        j *= base;
         i++;
     }
     if (num == 0) {
@@ -260,7 +272,7 @@ void TroykaOLED::print(uint32_t num, int x, int y, uint8_t base) {
     i--;
     k[i] = 0;
 
-    while(i) {
+    while (i) {
         k[i - 1] = _itoa(num % base);
         num /= base;
         i--;
@@ -288,7 +300,7 @@ void TroykaOLED::print(double num, int x, int y, uint8_t sum) {
         k = j;
         // если полученное целое число равно нулю, то выводим sum раз символ «0»
         if (j == 0) {
-            while(sum) {
+            while (sum) {
                 print("0");
                 sum--;
             }
@@ -306,7 +318,7 @@ void TroykaOLED::print(double num, int x, int y, uint8_t sum) {
 
 void TroykaOLED::drawPixel(int x, int y, uint8_t color) {
     _drawPixel(x, y, color);
-        if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
     _numX = x;
@@ -315,26 +327,26 @@ void TroykaOLED::drawPixel(int x, int y, uint8_t color) {
 
 void TroykaOLED::drawLine(int x1, int y1, int x2, int y2, uint8_t color) {
     _drawLine(x1, y1, x2, y2, color);
-    if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
-    _numX = x2; 
+    _numX = x2;
     _numY = y2;
-}   
+}
 
 void TroykaOLED::drawLine(int x2, int y2, uint8_t color) {
     drawLine(_numX, _numY, x2, y2, color);
 }
 
 void TroykaOLED::drawRect(int x1, int y1, int x2, int y2, bool fill, uint8_t color) {
-    if (fill) { 
+    if (fill) {
         if (x1 < x2) {
             for (int x = x1; x <= x2; x++) {
-                _drawLine(x,y1,x,y2,color);
+                _drawLine(x, y1, x, y2, color);
             }
         } else {
             for (int x = x1; x >= x2; x--) {
-                _drawLine(x,y1,x,y2,color);
+                _drawLine(x, y1, x, y2, color);
             }
         }
     } else {
@@ -343,7 +355,7 @@ void TroykaOLED::drawRect(int x1, int y1, int x2, int y2, bool fill, uint8_t col
         _drawLine(x2, y2, x1, y2, color);
         _drawLine(x1, y1, x1, y2, color);
     }
-    if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
     _numX = x2;
@@ -360,7 +372,7 @@ void TroykaOLED::drawCircle(int x, int y, uint8_t r, bool fill, uint8_t color) {
         if (fill) {
             // прорисовываем горизонтальные линии вверху круга (между точками 3 и 1 дуг)
             _drawLine(x - x1, y - y1, x + x1, y - y1, color);
-            // прорисовываем горизонтальные линии внизу  круга (между точками 4 и 2 дуг)                                                                   
+            // прорисовываем горизонтальные линии внизу  круга (между точками 4 и 2 дуг)
             _drawLine(x - x1, y + y1, x + x1, y + y1, color);
             // прорисовываем горизонтальные линии выше середины круга (между точками 7 и 5 дуг)
             _drawLine(x - y1, y - x1, x + y1, y - x1, color);
@@ -384,10 +396,10 @@ void TroykaOLED::drawCircle(int x, int y, uint8_t r, bool fill, uint8_t color) {
             // 8 дуга 270° - 225° (2 дуга повёрнутая на +90°)
             _drawPixel(x - y1, y + x1, color);
         }
-        // если парабола p вышла в положительный диапазон  
-        if(p >= 0) {
+        // если парабола p вышла в положительный диапазон
+        if (p >= 0) {
             // сдвигаем её вниз на y1 * 2 (каждый такой сдвиг провоцирет смещение точки y1 первой дуги вниз)
-            y1--; 
+            y1--;
             p -= y1 * 2;
         }
         // с каждым проходом цикла, смещаем точку x1 первой дуги влево и находим новую координату параболы p
@@ -395,7 +407,7 @@ void TroykaOLED::drawCircle(int x, int y, uint8_t r, bool fill, uint8_t color) {
         x1++;
         p += x1 * 2;
     }
-    if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
     _numX = x;
@@ -407,57 +419,57 @@ void TroykaOLED::drawImage(const uint8_t* image, int x, int y, uint8_t mem) {
     uint8_t h = getImageHeight(image, mem);
     bool color;
     // колонка с которой требуется начать вывод изображения ...
-    switch(x) {
-        // определяем начальную колонку для выравнивания по левому краю																							
-    	case OLED_LEFT:
-            _numX = 0;			
-            break;
-        // определяем начальную колонку для выравнивания по центру
-    	case OLED_CENTER:
-            _numX = (_width - w) / 2;
-            break;
-        //  определяем начальную колонку для выравнивания по правому краю
-    	case OLED_RIGHT:
-            _numX = _width - w;
-            break;	
-        // начальной колонкой останется та, на которой был закончен вывод предыдущего текста или изображения																
-    	case OLED_THIS:
-            _numX = _numX;
-            break;
-        //  начальная колонка определена пользователем
-    	default:
-            _numX = x;
-            break;
+    switch (x) {
+    // определяем начальную колонку для выравнивания по левому краю
+    case OLED_LEFT:
+        _numX = 0;
+        break;
+    // определяем начальную колонку для выравнивания по центру
+    case OLED_CENTER:
+        _numX = (_width - w) / 2;
+        break;
+    //  определяем начальную колонку для выравнивания по правому краю
+    case OLED_RIGHT:
+        _numX = _width - w;
+        break;
+    // начальной колонкой останется та, на которой был закончен вывод предыдущего текста или изображения
+    case OLED_THIS:
+        _numX = _numX;
+        break;
+    //  начальная колонка определена пользователем
+    default:
+        _numX = x;
+        break;
     }
-    // строка с которой требуется начать вывод изображения ...	
-    switch(y) {
-        // определяем начальную строку для выравнивания по верхнему краю
-    	case OLED_TOP:
-            _numY = h - 1;
-            break;
-        // определяем начальную строку для выравнивания по центру
-    	case OLED_CENTER: 
-            _numY = (_height - h) / 2;
-            break;
-        // определяем начальную строку для выравнивания по нижнему краю
-    	case OLED_BOTTOM:
-            _numY = _height - 1;
-            break;
-        // начальной строкой останется та, на которой выведен предыдущий текст или изображение
-    	case OLED_THIS:
-            _numY = _numY;
-            break;
-        // начальная строка определена пользователем
-    	default:
-            _numY = y;
-            break;
+    // строка с которой требуется начать вывод изображения ...
+    switch (y) {
+    // определяем начальную строку для выравнивания по верхнему краю
+    case OLED_TOP:
+        _numY = h - 1;
+        break;
+    // определяем начальную строку для выравнивания по центру
+    case OLED_CENTER:
+        _numY = (_height - h) / 2;
+        break;
+    // определяем начальную строку для выравнивания по нижнему краю
+    case OLED_BOTTOM:
+        _numY = _height - 1;
+        break;
+    // начальной строкой останется та, на которой выведен предыдущий текст или изображение
+    case OLED_THIS:
+        _numY = _numY;
+        break;
+    // начальная строка определена пользователем
+    default:
+        _numY = y;
+        break;
     }
     // проходим по страницам изображения...
     for (uint8_t p = 0; p < h; p++) {
         // проходим по колонкам  изображения...
         for (uint8_t k = 0; k < w; k++) {
             // если массив изображения находится в памяти ОЗУ
-    	   if (mem == IMG_RAM) {
+            if (mem == IMG_RAM) {
                 // получаем цвет очередного пикселя из p % 8 бита
                 // 2 + (p / 8 * w) + k байта, массива image
                 color = bitRead(image[2 + (p / 8 * w) + k], p % 8);
@@ -470,35 +482,35 @@ void TroykaOLED::drawImage(const uint8_t* image, int x, int y, uint8_t mem) {
             // если у изображения есть фон или цвет пикселя белый
             if (_stateImageBG || color) {
                 // прорисовываем пиксель в координате (_numX + k, _numY + p)
-                _drawPixel( _numX + k, _numY + p, color);
+                _drawPixel(_numX + k, _numY + p, color);
             }
         }
     }
     // добавляем ширину изображения к координате _numX
     _numX += w;
-    if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
 }
 
 bool TroykaOLED::getPixel(int x, int y) {
-    if(x < 0 || x > _height - 1 || y < 0 || y > _width - 1) {
+    if (x < 0 || x > _height - 1 || y < 0 || y > _width - 1) {
         return 0;
     }
     // определяем номер байта массива _bufferDisplay в котором находится пиксель
     uint16_t numByte = (y / 8 * 128) + x;
     // определяем номер бита в найденном байте, который соответсвует искомому пикселю
-    uint8_t  numBit = y % 8;
+    uint8_t numBit = y % 8;
     // возвращаем цвет пикселя из бита numBit элемента numByte массива _bufferDisplay
     return bitRead(_bufferDisplay[numByte], numBit);
 }
 
-uint8_t	TroykaOLED::getImageWidth(const uint8_t* image, uint8_t mem) {
+uint8_t TroykaOLED::getImageWidth(const uint8_t* image, uint8_t mem) {
     // возвращаем ширину изображения
     return (mem == IMG_RAM) ? image[0] : pgm_read_byte(&image[0]);
 }
 
-uint8_t	TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
+uint8_t TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
     // возвращаем высоту изображения
     return (mem == IMG_RAM) ? image[1] : pgm_read_byte(&image[1]);
 }
@@ -521,63 +533,63 @@ void TroykaOLED::_print(char* data, int x, int y) {
     bool c;
     // колонка с которой требуется начать вывод текста ...
     switch (x) {
-        // определяем начальную колонку для выравнивания по левому краю.
-        case OLED_LEFT: 
-            _numX = 0;
-            break;
-        // определяем начальную колонку для выравнивания по центру
-        case OLED_CENTER:
-            _numX = (_width - len) / 2;
-            break;
-        // определяем начальную колонку для выравнивания по правому краю
-        case OLED_RIGHT:
-            _numX = _width - len;
-            break;
-        // начальной колонкой останется та, на которой был закончен вывод предыдущего текста или изображения
-        case OLED_THIS: 
-            _numX = _numX;
-            break;
-        // начальная колонка определена пользователем
-        default:
-            _numX = x;
-            break;
+    // определяем начальную колонку для выравнивания по левому краю.
+    case OLED_LEFT:
+        _numX = 0;
+        break;
+    // определяем начальную колонку для выравнивания по центру
+    case OLED_CENTER:
+        _numX = (_width - len) / 2;
+        break;
+    // определяем начальную колонку для выравнивания по правому краю
+    case OLED_RIGHT:
+        _numX = _width - len;
+        break;
+    // начальной колонкой останется та, на которой был закончен вывод предыдущего текста или изображения
+    case OLED_THIS:
+        _numX = _numX;
+        break;
+    // начальная колонка определена пользователем
+    default:
+        _numX = x;
+        break;
     }
     // строка с которой требуется начать вывод текста ...
     switch (y) {
-        // определяем начальную строку для выравнивания по верхнему краю
-        case OLED_TOP:
-            _numY = _font.height - 1;
-            break;
-        // определяем начальную строку для выравнивания по центру
-        case OLED_CENTER:
-            _numY = (_height - _font.height) / 2 + _font.height;
-            break;
-        // определяем начальную строку для выравнивания по нижнему краю
-        case OLED_BOTTOM:
-            _numY = _height;
-            break;
-        // начальной строкой останется та, на которой выведен предыдущий текст или изображение
-        case OLED_THIS:
-            _numY = _numY;
-            break;
-        // начальная строка определена пользователем
-        default:
-            _numY = y;
-            break;
+    // определяем начальную строку для выравнивания по верхнему краю
+    case OLED_TOP:
+        _numY = _font.height - 1;
+        break;
+    // определяем начальную строку для выравнивания по центру
+    case OLED_CENTER:
+        _numY = (_height - _font.height) / 2 + _font.height;
+        break;
+    // определяем начальную строку для выравнивания по нижнему краю
+    case OLED_BOTTOM:
+        _numY = _height;
+        break;
+    // начальной строкой останется та, на которой выведен предыдущий текст или изображение
+    case OLED_THIS:
+        _numY = _numY;
+        break;
+    // начальная строка определена пользователем
+    default:
+        _numY = y;
+        break;
     }
     // пересчитываем количество колонок которое занимают выводимые символы, с учётом начальной позиции
     if (_numX + len > _width) {
         len = (_width - _numX) / _font.width * _font.width;
     }
-    // проходим по страницам символов...											
+    // проходим по страницам символов...
     for (int8_t p = 0; p < _font.height / 8; p++) {
-        // проходим по выводимым символам...																	
-    	for (uint8_t n = 0; n < (len / _font.width); n++) {
+        // проходим по выводимым символам...
+        for (uint8_t n = 0; n < (len / _font.width); n++) {
             // присваиваем переменной num код выводимого символа
-            num  = uint8_t(data[n]);
+            num = uint8_t(data[n]);
             // если в массиве символов, до кода текущего символа, имеется пустой интервал
             // уменьшаем код текущего символа на количество символов в пустом интервале
-            if(_font.startSpace[0] < num) {
+            if (_font.startSpace[0] < num) {
                 num -= _font.sumSpace[0];
             }
             // если в массиве символов, до кода текущего символа, имеется пустой интервал
@@ -586,11 +598,11 @@ void TroykaOLED::_print(char* data, int x, int y) {
                 num -= _font.sumSpace[1];
             }
             // если в массиве символов, до кода текущего символа, имеется пустой интервал
-            // то уменьшаем код текущего символа на количество символов в пустом интервале									
+            // то уменьшаем код текущего символа на количество символов в пустом интервале
             if (_font.startSpace[2] < num) {
                 num -= _font.sumSpace[2];
             }
-            // вычитаем код первого символа (с которого начинается массив шрифта)									
+            // вычитаем код первого символа (с которого начинается массив шрифта)
             num -= _font.firstSymbol;
             // умножаем полученное значение на ширину символа (количество колонок)
             num *= _font.width;
@@ -609,7 +621,7 @@ void TroykaOLED::_print(char* data, int x, int y) {
                     // нижняя строка текста - высота симолов + количество уже выведенных страниц + номер бита байта текущего символа + 1
                     y1 = _numY + p * 8 + b;
                     // цвет точки символа: 1-белый, 0-чёрный
-                    c = bitRead( pgm_read_byte(&_font.fontData[num + k]), b);
+                    c = bitRead(pgm_read_byte(&_font.fontData[num + k]), b);
                     // если цвет текста требуется инвертировать
                     if (_font.invert) {
                         // если установлен фон текста или точка стоит на букве (а не на фоне)
@@ -617,19 +629,19 @@ void TroykaOLED::_print(char* data, int x, int y) {
                             // выводим инвертированную точку
                             _drawPixel(x1, y1, !c);
                         }
-                    } else { 
+                    } else {
                         // если цвет текста не требуется инвертировать
                         // если установлен фон текста или точка стоит на букве (а не на фоне)
                         if (_font.background || c) {
                             // выводим не инвертированную точку
-                            _drawPixel(x1, y1,  c);
+                            _drawPixel(x1, y1, c);
                         }
                     }
                 }
             }
         }
     }
-    if(_stateAutoUpdate) {
+    if (_stateAutoUpdate) {
         _sendBuffer();
     }
     // сохраняем координату окончания текста.
@@ -646,73 +658,75 @@ char* TroykaOLED::_codingCP866(char* StrIn) {
     // определяем строку для вывода результата
     char* StrOut = StrIn;
     // переменненые для хранения номера сивола в строках StrIn и StrOut
-    uint8_t	numIn =	0, numOut =	0;
+    uint8_t numIn = 0, numOut = 0;
     // переменненые для хранения текущего кода символа в строках StrIn и StrOut
-    uint8_t charThis =	StrIn[0], charNext = StrIn[1];
+    uint8_t charThis = StrIn[0], charNext = StrIn[1];
     switch (_codingName) {
-        // преобразуем текст из кодировки UTF-8:
-    	case TXT_UTF8:
-    		while (charThis > 0 && numIn < 0xFF ) {
-                // если код текущего символа равен 208, а за ним следует символ с кодом 144...191
-                // значит это буква «А»...«п» требующая преобразования к коду 128...175
-                if (charThis == 0xD0 && charNext >= 0x90 && charNext <= 0xBF) {
-                    StrOut[numOut] = charNext - 0x10;
-                    numIn++;
-                } else if (charThis == 0xD0 && charNext == 0x81) {
-                    // если код текущего символа равен 208, а за ним следует символ с кодом 129
-                    // значит это буква «Ё» требующая преобразования к коду 240
-                    StrOut[numOut] = 0xF0; numIn++;
-                } else if (charThis == 0xD1 && charNext >= 0x80 && charNext <= 0x8F) {
-                    // если код текущего символа равен 209, а за ним следует символ с кодом 128...143
-                    // значит это буква «р»...«я» требующая преобразования к коду 224...239
-                    StrOut[numOut] = charNext + 0x60; numIn++;
-                } else if (charThis == 0xD1 && charNext == 0x91) {
-                    // если код текущего символа равен 209, а за ним следует символ с кодом 145
-                    // значит это буква «ё» требующая преобразования к коду 241
-                    StrOut[numOut] = 0xF1;
-                    numIn++;
-                } else {
-                    // иначе не меняем символ
-                    StrOut[numOut] = charThis;
-                }
-                // переходим к следующему символу
+    // преобразуем текст из кодировки UTF-8:
+    case TXT_UTF8:
+        while (charThis > 0 && numIn < 0xFF) {
+            // если код текущего символа равен 208, а за ним следует символ с кодом 144...191
+            // значит это буква «А»...«п» требующая преобразования к коду 128...175
+            if (charThis == 0xD0 && charNext >= 0x90 && charNext <= 0xBF) {
+                StrOut[numOut] = charNext - 0x10;
                 numIn++;
-                numOut++;
-                charThis = StrIn[numIn];
-                charNext = StrIn[numIn + 1];
-                // добавляем символ конца строки и возвращаем строку StrOut
+            } else if (charThis == 0xD0 && charNext == 0x81) {
+                // если код текущего символа равен 208, а за ним следует символ с кодом 129
+                // значит это буква «Ё» требующая преобразования к коду 240
+                StrOut[numOut] = 0xF0;
+                numIn++;
+            } else if (charThis == 0xD1 && charNext >= 0x80 && charNext <= 0x8F) {
+                // если код текущего символа равен 209, а за ним следует символ с кодом 128...143
+                // значит это буква «р»...«я» требующая преобразования к коду 224...239
+                StrOut[numOut] = charNext + 0x60;
+                numIn++;
+            } else if (charThis == 0xD1 && charNext == 0x91) {
+                // если код текущего символа равен 209, а за ним следует символ с кодом 145
+                // значит это буква «ё» требующая преобразования к коду 241
+                StrOut[numOut] = 0xF1;
+                numIn++;
+            } else {
+                // иначе не меняем символ
+                StrOut[numOut] = charThis;
             }
-            StrOut[numOut] = '\0';
+            // переходим к следующему символу
+            numIn++;
+            numOut++;
+            charThis = StrIn[numIn];
+            charNext = StrIn[numIn + 1];
+            // добавляем символ конца строки и возвращаем строку StrOut
+        }
+        StrOut[numOut] = '\0';
         break;
-        //преобразуем текст из кодировки WINDOWS-1251:
-        case TXT_WIN1251:
-            // если код текущего символа строки StrIn больше 0 и номер текушего символа строки StrIn меньше 255
-            while (charThis > 0 && numIn < 0xFF) {
-                // если код текущего символа равен 192...239
-                // значит это буква «А»...«п» требующая преобразования к коду 128...175
-                if (charThis >= 0xC0 && charThis <= 0xEF) {
-                    StrOut[numOut] = charThis - 0x40;
-                } else if (charThis >= 0xF0 && charThis <= 0xFF) {
-                    // если код текущего символа равен 240...255
-                    // значит это буква «р»...«я» требующая преобразования к коду 224...239
-                    StrOut[numOut] = charThis - 0x10;
-                } else if (charThis == 0xA8) {
-                    // если код текущего символа равен 168, значит это буква «Ё» требующая преобразования к коду 240
-                    StrOut[numOut] = 0xF0;
-                }else if (charThis == 0xB8) {
-                    // если код текущего символа равен 184, значит это буква «ё» требующая преобразования к коду 241
-                    StrOut[numOut] = 0xF1;
-                } else {
-                    // иначе не меняем символ
-                    StrOut[numOut] = charThis;
-                }
-                // переходим к следующему символу
-                numIn++;
-                numOut++;
-                charThis = StrIn[numIn];
-                // добавляем символ конца строки
+    //преобразуем текст из кодировки WINDOWS-1251:
+    case TXT_WIN1251:
+        // если код текущего символа строки StrIn больше 0 и номер текушего символа строки StrIn меньше 255
+        while (charThis > 0 && numIn < 0xFF) {
+            // если код текущего символа равен 192...239
+            // значит это буква «А»...«п» требующая преобразования к коду 128...175
+            if (charThis >= 0xC0 && charThis <= 0xEF) {
+                StrOut[numOut] = charThis - 0x40;
+            } else if (charThis >= 0xF0 && charThis <= 0xFF) {
+                // если код текущего символа равен 240...255
+                // значит это буква «р»...«я» требующая преобразования к коду 224...239
+                StrOut[numOut] = charThis - 0x10;
+            } else if (charThis == 0xA8) {
+                // если код текущего символа равен 168, значит это буква «Ё» требующая преобразования к коду 240
+                StrOut[numOut] = 0xF0;
+            } else if (charThis == 0xB8) {
+                // если код текущего символа равен 184, значит это буква «ё» требующая преобразования к коду 241
+                StrOut[numOut] = 0xF1;
+            } else {
+                // иначе не меняем символ
+                StrOut[numOut] = charThis;
             }
-            StrOut[numOut] = '\0';
+            // переходим к следующему символу
+            numIn++;
+            numOut++;
+            charThis = StrIn[numIn];
+            // добавляем символ конца строки
+        }
+        StrOut[numOut] = '\0';
         break;
     }
     // возвращаем строку StrOut
@@ -720,25 +734,25 @@ char* TroykaOLED::_codingCP866(char* StrIn) {
 }
 
 void TroykaOLED::_drawPixel(int x, int y, uint8_t color) {
-    if(x < 0 || x > _width - 1 || y < 0 || y > _height - 1) {
+    if (x < 0 || x > _width - 1 || y < 0 || y > _height - 1) {
         return;
     }
     // определяем номер страницы в которой должен находиться пиксель
-    uint8_t  p = y / 8;	
-    // определяем номер байта массива _bufferDisplay в котором требуется прорисовать пиксель																							
-    uint16_t numByte = (p * 128 ) + x;
+    uint8_t p = y / 8;
+    // определяем номер байта массива _bufferDisplay в котором требуется прорисовать пиксель
+    uint16_t numByte = (p * 128) + x;
     // определяем номер бита в найденном байте, который соответсвует рисуемому пикселю
     uint8_t numBit = y % 8;
     switch (color) {
-        case WHITE:
-            _bufferDisplay[numByte] |= 1 << numBit;
-            break;
-        case BLACK:
-            _bufferDisplay[numByte] &= ~(1 << numBit);
-            break;
-        case INVERSE:
-            _bufferDisplay[numByte] ^= 1 << numBit;
-            break;
+    case WHITE:
+        _bufferDisplay[numByte] |= 1 << numBit;
+        break;
+    case BLACK:
+        _bufferDisplay[numByte] &= ~(1 << numBit);
+        break;
+    case INVERSE:
+        _bufferDisplay[numByte] ^= 1 << numBit;
+        break;
     }
 }
 
@@ -751,11 +765,11 @@ void TroykaOLED::_drawLine(int x1, int y1, int x2, int y2, uint8_t color) {
     if (abs(x3) > abs(y3)) {
         if (x1 < x2) {
             for (int x = x1; x <= x2; x++) {
-                _drawPixel(x,((x - x1) * y3 / x3 + y1), color);
+                _drawPixel(x, ((x - x1) * y3 / x3 + y1), color);
             }
         } else {
             for (int x = x1; x >= x2; x--) {
-                _drawPixel(x,((x - x1) * y3 / x3 + y1), color);
+                _drawPixel(x, ((x - x1) * y3 / x3 + y1), color);
             }
         }
     } else {
@@ -772,7 +786,7 @@ void TroykaOLED::_drawLine(int x1, int y1, int x2, int y2, uint8_t color) {
 }
 
 // отправка байта команды
-void TroykaOLED::_sendCommand(uint8_t command){
+void TroykaOLED::_sendCommand(uint8_t command) {
     _wire->beginTransmission(_i2cAddress);
     _wire->write(0x80);
     _wire->write(command);
@@ -788,7 +802,7 @@ void TroykaOLED::_sendBuffer() {
     _sendCommand(0);
     _sendCommand(_width - 1);
 
-    for (int i = 0; i < _width * _height / 8; i++){
+    for (int i = 0; i < _width * _height / 8; i++) {
         _wire->beginTransmission(_i2cAddress);
         _wire->write(0x40);
         for (uint8_t x = 0; x < 16; x++) {

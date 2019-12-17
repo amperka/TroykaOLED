@@ -150,6 +150,7 @@ public:
     void setCoding(uint8_t codingName = false);
     void setCursor(int numX, int numY);
     void print(char* s, int x = OLED_THIS, int y = OLED_THIS);
+    void print(char ch, int x, int y);
     void print(const char* s, int x = OLED_THIS, int y = OLED_THIS);
     void print(String s , int x = OLED_THIS, int y = OLED_THIS);
     void print(int8_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
