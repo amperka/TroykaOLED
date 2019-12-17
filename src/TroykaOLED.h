@@ -150,6 +150,7 @@ public:
     void setCoding(uint8_t codingName = false);
     void setCursor(int numX, int numY);
     void print(char* s, int x = OLED_THIS, int y = OLED_THIS);
+    void print(char ch, int x, int y);
     void print(const char* s, int x = OLED_THIS, int y = OLED_THIS);
     void print(String s , int x = OLED_THIS, int y = OLED_THIS);
     void print(int8_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
@@ -159,7 +160,6 @@ public:
     void print(int32_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
     void print(uint32_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
     void print(double n, int x = OLED_THIS, int y = OLED_THIS, uint8_t digits = 2);
-	void print(char ch, int x, int y);
     void drawPixel(int x, int y, uint8_t color = WHITE); 
     void drawLine(int x1, int y1, int x2, int y2, uint8_t color = WHITE);
     void drawLine(int x2, int y2, uint8_t color = WHITE);
