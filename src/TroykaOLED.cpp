@@ -189,12 +189,6 @@ void TroykaOLED::print(String str, int x, int y) {
     _print(_codingCP866(data), x, y);
 }
 
-void TroykaOLED::print(char data, int x, int y) {
-    String s;
-    s += data;
-    print(s, x, y);
-}
-
 void TroykaOLED::print(const char* str, int x, int y) {
     char data[strlen(str) + 1];
     for (uint8_t i = 0; i <= strlen(str); i++) {
