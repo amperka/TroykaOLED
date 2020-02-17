@@ -1,5 +1,5 @@
-#ifndef TROYKA_OLED_H
-#define TROYKA_OLED_H
+#ifndef __TROYKA_OLED_H__
+#define __TROYKA_OLED_H__
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -102,4 +102,4 @@ private:
     void _sendBuffer();
 };
 
-#endif // TROYKA_OLED_H
+#endif // __TROYKA_OLED_H__
