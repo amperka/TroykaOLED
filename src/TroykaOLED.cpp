@@ -328,17 +328,15 @@ void TroykaOLED::drawPixel(int16_t x, int16_t y, uint8_t color) {
     _last.y = y;
 }
 
-void TroykaOLED::drawLine(int x1, int y1, int x2, int y2, uint8_t color) {
+void TroykaOLED::drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color) {
     _drawLine(x1, y1, x2, y2, color);
-    if (_stateAutoUpdate) {
-        _sendBuffer();
-    }
-    _numX = x2;
-    _numY = y2;
+    _AUTO_UPDATE();
+    _last.x = x2;
+    _last.y = y2;
 }
 
-void TroykaOLED::drawLine(int x2, int y2, uint8_t color) {
-    drawLine(_numX, _numY, x2, y2, color);
+void TroykaOLED::drawLine(int16_t x2, int16_t y2, uint8_t color) {
+    drawLine(_last.x, _last.y, x2, y2, color);
 }
 
 void TroykaOLED::drawRect(int x1, int y1, int x2, int y2, bool fill, uint8_t color) {
@@ -755,30 +753,30 @@ void TroykaOLED::_drawPixel(int16_t x, int16_t y, uint8_t color) {
     _change(x - 1, x + 1);
 }
 
-void TroykaOLED::_drawLine(int x1, int y1, int x2, int y2, uint8_t color) {
-    int x3 = x2 - x1;
-    int y3 = y2 - y1;
+void TroykaOLED::_drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color) {
+    int16_t dx = x2 - x1;
+    int16_t dy = y2 - y1;
     // рисуем линию по линейному уровнению (y-y1)/(y2-y1) = (x-x1)/(x2-x1)
     // определяем где больше расстояние (по оси x или y)
     // по той оси проходим в цикле, для поиска точек на другой оси
-    if (abs(x3) > abs(y3)) {
+    if (abs(dx) > abs(dy)) {
         if (x1 < x2) {
-            for (int x = x1; x <= x2; x++) {
-                _drawPixel(x, ((x - x1) * y3 / x3 + y1), color);
+            for (int16_t x = x1; x <= x2; x++) {
+                _drawPixel(x, ((x - x1) * dy / dx + y1), color);
             }
         } else {
-            for (int x = x1; x >= x2; x--) {
-                _drawPixel(x, ((x - x1) * y3 / x3 + y1), color);
+            for (int16_t x = x1; x >= x2; x--) {
+                _drawPixel(x, ((x - x1) * dy / dx + y1), color);
             }
         }
     } else {
         if (y1 < y2) {
-            for (int y = y1; y <= y2; y++) {
-                _drawPixel(((y - y1) * x3 / y3 + x1), y, color);
+            for (int16_t y = y1; y <= y2; y++) {
+                _drawPixel(((y - y1) * dx / dy + x1), y, color);
             }
         } else {
-            for (int y = y1; y >= y2; y--) {
-                _drawPixel(((y - y1) * x3 / y3 + x1), y, color);
+            for (int16_t y = y1; y >= y2; y--) {
+                _drawPixel(((y - y1) * dx / dy + x1), y, color);
             }
         }
     }

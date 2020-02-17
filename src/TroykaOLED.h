@@ -58,8 +58,8 @@ public:
     void print(uint32_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
     void print(double n, int x = OLED_THIS, int y = OLED_THIS, uint8_t digits = 2);
     void drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
-    void drawLine(int x1, int y1, int x2, int y2, uint8_t color = WHITE);
-    void drawLine(int x2, int y2, uint8_t color = WHITE);
+    void drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
+    void drawLine(int16_t x2, int16_t y2, uint8_t color = WHITE);
     void drawRect(int x1, int y1, int x2, int y2, bool fill = false, uint8_t color = WHITE);
     void drawCircle(int x, int y, uint8_t r, bool fill = false, uint8_t color = WHITE);
     void drawImage(const uint8_t* image, int x = OLED_THIS, int y = OLED_THIS, uint8_t mem = IMG_ROM);
@@ -111,7 +111,7 @@ private:
     } changed;
 
     void _drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
-    void _drawLine(int x1, int y1, int x2, int y2, uint8_t color = WHITE);
+    void _drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
     void _print(char*, int x, int y);
     char _itoa(uint8_t num);
     char* _codingCP866(char* data);
