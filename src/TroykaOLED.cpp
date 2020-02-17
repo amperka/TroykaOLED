@@ -479,13 +479,13 @@ uint8_t TroykaOLED::getPixel(int16_t x, int16_t y) {
         return BLACK;
 }
 
+// возвращает ширину изображения в точках, mem - тип памяти
 uint8_t TroykaOLED::getImageWidth(const uint8_t* image, uint8_t mem) {
-    // возвращаем ширину изображения
     return (mem == IMG_RAM) ? image[0] : pgm_read_byte(&image[0]);
 }
 
+// возвращает высоту изображения в в точках, mem - тип памяти
 uint8_t TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
-    // возвращаем высоту изображения
     return (mem == IMG_RAM) ? image[1] : pgm_read_byte(&image[1]);
 }
 
