@@ -230,6 +230,10 @@ void TroykaOLED::_radixConverter(uint32_t number, bool sign, uint8_t bits,
     default:
         break;
     }
+    if (number == 0) {
+        print("0");
+        return;
+    }
     char dig[bits + 1];
     dig[bits] = 0;
     uint8_t pos = bits - 1;
@@ -267,12 +271,19 @@ void TroykaOLED::print(double number, int16_t x, int16_t y, uint8_t sum) {
 
     uint8_t pos = 10 + sum;
     // печатаем в массив дробную часть
-    pos = _punchDigits(fractionPart, dig, pos, 10);
+    uint8_t pos2 = _punchDigits(fractionPart, dig, pos, 10);
+    if(pos2 == pos) {
+        dig[pos--] = '0';
+    }
+    pos = pos2;
     // теперь точку
-    dig[pos] = '.';
-    pos--;
+    dig[pos--] = '.';
     // печатаем в массив целую часть
-    pos = _punchDigits(integerPart, dig, pos, 10);
+    pos2 = _punchDigits(integerPart, dig, pos, 10);
+    if(pos2 == pos) {
+        dig[pos--] = '0';
+    }
+    pos = pos2;
     // добавляем спереди минус
     dig[pos] = '-';
 
