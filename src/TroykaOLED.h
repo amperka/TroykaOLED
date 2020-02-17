@@ -98,6 +98,8 @@ private:
     char _itoa(uint8_t num);
     char* _codingCP866(char* data);
     void _sendCommand(uint8_t command);
+    void _sendCommand(uint8_t command, uint8_t value);
+    void _sendCommand(uint8_t command, uint8_t value1, uint8_t value2);
     void _sendData(uint8_t* data, uint8_t sum);
     void _sendBuffer();
 };

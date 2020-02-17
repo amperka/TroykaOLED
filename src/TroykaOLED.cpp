@@ -787,6 +787,19 @@ void TroykaOLED::_sendCommand(uint8_t command) {
     _wire->endTransmission();
 }
 
+// то же для команды с параметром
+void TroykaOLED::_sendCommand(uint8_t command, uint8_t value) {
+    _sendCommand(command);
+    _sendCommand(value);
+}
+
+// то же для команды с двумя параметрами
+void TroykaOLED::_sendCommand(uint8_t command, uint8_t value1, uint8_t value2) {
+    _sendCommand(command);
+    _sendCommand(value1);
+    _sendCommand(value2);
+}
+
 // отправка буфера (массива _bufferDisplay) в дисплей
 void TroykaOLED::_sendBuffer() {
     _sendCommand(SSD1306_ADDR_PAGE);
