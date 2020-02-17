@@ -112,7 +112,7 @@ private:
     void _interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h);
     uint8_t _fontRemapping(char c);
     void _print(char c, int16_t x, int16_t y);
-    void _print(char*, int x, int y);
+    void _print(char* s, int16_t x, int16_t y);
     char _itoa(uint8_t num);
     char* _codingCP866(char* data);
     void _sendCommand(uint8_t command);
