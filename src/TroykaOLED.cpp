@@ -565,7 +565,6 @@ void TroykaOLED::_print(char* line, int16_t x, int16_t y) {
 //  преобразуем цифры 0-9 в символ с кодом 48-57, а цифры 10-15 в символ с кодом 65-71
 char TroykaOLED::_itoa(uint8_t number) { return uint8_t(number + (number < 10 ? '0' : 'A')); }
 
-
 char* TroykaOLED::_codingCP866(uint8_t* strIn) {
     // определяем строку для вывода результата
     uint8_t* strOut = strIn;
