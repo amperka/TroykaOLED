@@ -16,16 +16,16 @@
 #define OLED_CENTER 254
 #define OLED_THIS 255
 
-#define IMG_RAM 0
-#define IMG_ROM 1
+constexpr int8_t IMG_RAM = 0;
+constexpr int8_t IMG_ROM = 1;
 
-#define TXT_CP866 0
-#define TXT_UTF8 1
-#define TXT_WIN1251 2
+constexpr int8_t TXT_CP866 = 0;
+constexpr int8_t TXT_UTF8 = 1;
+constexpr int8_t TXT_WIN1251 = 2;
 
-#define BLACK 0
-#define WHITE 1
-#define INVERSE 2
+constexpr int16_t BLACK = 0;
+constexpr int16_t WHITE = 1;
+constexpr int16_t INVERSE = 2;
 
 class TroykaOLED {
 public:
