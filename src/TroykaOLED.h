@@ -35,6 +35,7 @@ public:
     TroykaOLED(uint8_t address = 0x3C, uint8_t width = 128, uint8_t heigth = 64);
     void begin(TwoWire* wire = &Wire);
     void update();
+    void updateAll();
     void autoUpdate(bool stateAutoUpdate = true);
     void setBrigtness(uint8_t brigtness);
     void clearDisplay();

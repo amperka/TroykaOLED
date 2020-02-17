@@ -74,8 +74,22 @@ void TroykaOLED::begin(TwoWire* wire) {
     clearDisplay();
 }
 
+// обновление только измененных столбцов
 void TroykaOLED::update() {
-    _sendBuffer();
+    if (changed.right > -1 || changed.left < _width + 2) {
+        changed.left = changed.left < 0 ? 0 : changed.left;
+        changed.right = changed.right > _width - 1 ? _width - 1 : changed.right;
+        _sendColumns(changed.left, changed.right);
+        changed.left = _width + 2;
+        changed.right = -1;
+    }
+}
+
+// обновление всех столбцов
+void TroykaOLED::updateAll() {
+    _sendColumns(0, _width - 1);
+    changed.left = _width + 2;
+    changed.right = -1;
 }
 
 void TroykaOLED::autoUpdate(bool stateAutoUpdate) {
