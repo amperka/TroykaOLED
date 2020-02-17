@@ -175,82 +175,36 @@ void TroykaOLED::print(const char* line, int16_t x, int16_t y) {
     _print(_codingCP866((uint8_t*)data), x, y);
 }
 
-void TroykaOLED::print(int8_t num, int x, int y, uint8_t base) {
-    print(int32_t(num), x, y, base);
-}
-
-void TroykaOLED::print(uint8_t num, int x, int y, uint8_t base) {
-    print(uint32_t(num), x, y, base);
-}
-
-void TroykaOLED::print(int16_t num, int x, int y, uint8_t base) {
-    print(int32_t(num), x, y, base);
-}
-
-void TroykaOLED::print(uint16_t num, int x, int y, uint8_t base) {
-    print(uint32_t(num), x, y, base);
-}
-
-void TroykaOLED::print(int32_t num, int x, int y, uint8_t base) {
-    // определяем количество разрядов числа
-    // i = количество разрядов + 2, j = множитель кратный основанию системы счисления
-    int8_t i = 2;
-    int32_t j = 1;
-    while (num / j) {
-        j *= base;
-        i++;
-    }
-    // создаём строку k из i символов и добавляем символ(ы) конца строки
-    char k[i];
-    i--;
-    k[i] = 0;
-    i--;
-    if (num > 0) {
-        k[i] = 0;
-        i--;
-    }
-    // создаём строку k из i символов и добавляем символ(ы) конца строки
-    uint32_t n = num < 0 ? num * -1 : num;
-    while (i) {
-        k[i] = _itoa(n % base);
-        n /= base;
-        i--;
-    }
-    // заполняем строку k
-    if (num >= 0) {
-        k[i] = _itoa(n % base);
+void TroykaOLED::print(int8_t number, int16_t x, int16_t y, uint8_t base) {
+    if (base == 10 && number < 0) {
+        _radixConverter(-number, true, 8, base, x, y);
     } else {
-        k[i] = '-';
+        _radixConverter(number, false, 8, base, x, y);
     }
-    //	добавляем первый символ (либо первая цифра, либо знак минус)
-    //  выводим строку k
-    print(k, x, y);
 }
 
-void TroykaOLED::print(uint32_t num, int x, int y, uint8_t base) {
-    // определяем количество разрядов числа
-    // i = количество разрядов + 1, j = множитель кратный основанию системы счисления
-    int8_t i = 1;
-    uint32_t j = 1;
-    while (num / j) {
-        j *= base;
-        i++;
-    }
-    if (num == 0) {
-        i++;
-    }
-    // определяем строку k из i символов и заполняем её
-    char k[i];
-    i--;
-    k[i] = 0;
+void TroykaOLED::print(uint8_t number, int16_t x, int16_t y, uint8_t base) {
+    _radixConverter(number, false, 8, base, x, y);
+}
 
-    while (i) {
-        k[i - 1] = _itoa(num % base);
-        num /= base;
-        i--;
+void TroykaOLED::print(int16_t number, int16_t x, int16_t y, uint8_t base) {
+    if (base == 10 && number < 0) {
+        _radixConverter(-number, true, 16, base, x, y);
+    } else {
+        _radixConverter(number, false, 16, base, x, y);
     }
-    // выводим строку k
-    print(k, x, y);
+}
+
+void TroykaOLED::print(uint16_t number, int16_t x, int16_t y, uint8_t base) {
+    _radixConverter(number, false, 16, base, x, y);
+}
+
+void TroykaOLED::print(int32_t number, int16_t x, int16_t y, uint8_t base) {
+    if (base == 10 && number < 0) {
+        _radixConverter(-number, true, 32, base, x, y);
+    } else {
+        _radixConverter(number, false, 32, base, x, y);
+    }
 }
 
 // служебная подпрограмма для конвертора систем счисления
@@ -292,39 +246,42 @@ void TroykaOLED::_radixConverter(uint32_t number, bool sign, uint8_t bits,
         print(&dig[pos + 1], x, y);
 }
 
-void TroykaOLED::print(double num, int x, int y, uint8_t sum) {
-    uint32_t i = 1, j = 0, k = 0;
-    j = sum;
-    while (j) {
-        i *= 10;
-        j--;
+void TroykaOLED::print(double number, int16_t x, int16_t y, uint8_t sum) {
+    bool sign = false;
+    // число отрицательное?
+    if (number < 0) {
+        number = -number;
+        sign = true;
     }
-    // выводим целую часть числа
-    print(int32_t(num), x, y);
-    // если требуется вывести хоть один знак после запятой, то ...
-    if (sum) {
-        //  выводим символ разделителя
-        print(".");
-        // получаем целое число, которое требуется вывести после запятой
-        j = num * i * (num < 0 ? -1 : 1);
-        j %= i;
-        k = j;
-        // если полученное целое число равно нулю, то выводим sum раз символ «0»
-        if (j == 0) {
-            while (sum) {
-                print("0");
-                sum--;
-            }
-        } else {
-            // иначе, если в полученном целом числе меньше разрядов чем требуется
-            // заполняем эти разряды выводя символ «0», после чего выводим само число
-            while (j * 10 < i) {
-                print("0");
-                j *= 10;
-            }
-            print(k);
-        }
+    char dig[12 + sum];
+    dig[11 + sum] = 0;
+    uint32_t integerPart, fractionPart;
+    // берем целую часть
+    integerPart = (int32_t)number;
+    // ищем дробную часть
+    double temp = number - integerPart;
+    for (int16_t i = 0; i < sum; i++) {
+        temp *= 10;
     }
+    fractionPart = (uint32_t)temp;
+
+    uint8_t pos = 10 + sum;
+    // печатаем в массив дробную часть
+    pos = _punchDigits(fractionPart, dig, pos, 10);
+    // теперь точку
+    dig[pos] = '.';
+    pos--;
+    // печатаем в массив целую часть
+    pos = _punchDigits(integerPart, dig, pos, 10);
+    // добавляем спереди минус
+    dig[pos] = '-';
+
+    if (sign)
+        // если число было отрицательное - выводим вместе с минусом
+        print(&dig[pos], x, y);
+    else
+        // иначе выводим без минуса
+        print(&dig[pos + 1], x, y);
 }
 
 void TroykaOLED::drawPixel(int16_t x, int16_t y, uint8_t color) {
