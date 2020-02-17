@@ -12,7 +12,7 @@
 
 #define _AUTO_UPDATE()      \
     if (_stateAutoUpdate) { \
-        update();      \
+        update();           \
     }
 
 TroykaOLED::TroykaOLED(uint8_t i2cAddress, uint8_t width, uint8_t height) {
@@ -96,17 +96,14 @@ void TroykaOLED::autoUpdate(bool stateAutoUpdate) {
     _stateAutoUpdate = stateAutoUpdate;
 }
 
-void TroykaOLED::setBrigtness(uint8_t brigtness) {
-    _sendCommand(SSD1306_SET_CONTRAST);
-    _sendCommand(brigtness);
+void TroykaOLED::setBrightness(uint8_t brightness) {
+    _sendCommand(SSD1306_SET_CONTRAST, brightness);
 }
 
 void TroykaOLED::clearDisplay() {
-    memset(_bufferDisplay, 0, _width * _height / 8);
-
-    if (_stateAutoUpdate) {
-        _sendBuffer();
-    }
+    memset(_screenBuffer.asBytes, 0, _width * _height / 8);
+    _change(0, _width - 1);
+    _AUTO_UPDATE();
 }
 
 void TroykaOLED::invertDisplay(bool stateInvert) {
@@ -119,9 +116,7 @@ void TroykaOLED::invertDisplay(bool stateInvert) {
     }
 }
 
-void TroykaOLED::invertText(bool stateInvertText) {
-    _font.invert = stateInvertText;
-}
+void TroykaOLED::invertText(bool stateInvertText) { _font.invert = stateInvertText; }
 
 void TroykaOLED::bgText(bool stateTextBG) {
     _font.background = stateTextBG;
