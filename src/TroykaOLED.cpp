@@ -796,6 +796,16 @@ void TroykaOLED::_sendCommand(uint8_t command, uint8_t value1, uint8_t value2) {
     _sendCommand(value2);
 }
 
+// контролируем в пределах каких столбцов происходили изменения чтобы не перерисовывать все
+void TroykaOLED::_change(int16_t left, int16_t right) {
+    if (left < changed.left) {
+        changed.left = left;
+    }
+    if (right > changed.right) {
+        changed.right = right;
+    }
+}
+
 // отправка буфера (массива _bufferDisplay) в дисплей
 void TroykaOLED::_sendBuffer() {
     _sendCommand(SSD1306_ADDR_PAGE);

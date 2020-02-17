@@ -104,6 +104,11 @@ private:
         bool setFont = false;
     } _font;
 
+    struct {
+        int16_t left;
+        int16_t right;
+    } changed;
+
     void _drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
     void _drawLine(int x1, int y1, int x2, int y2, uint8_t color = WHITE);
     void _print(char*, int x, int y);
@@ -115,6 +120,7 @@ private:
     void _sendData(uint8_t* data, uint8_t sum);
     void _stamp(int16_t x, int16_t y, uint64_t body, uint8_t color);
     void _sendBuffer();
+    void _change(int16_t l, int16_t r);
 };
 
 #endif // __TROYKA_OLED_H__
