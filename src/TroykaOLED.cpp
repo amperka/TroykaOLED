@@ -440,83 +440,35 @@ void TroykaOLED::drawCircle(int16_t x, int16_t y, uint8_t r, bool fill, uint8_t 
     _last.y = y;
 }
 
-void TroykaOLED::drawImage(const uint8_t* image, int x, int y, uint8_t mem) {
-    uint8_t w = getImageWidth(image, mem);
-    uint8_t h = getImageHeight(image, mem);
-    bool color;
-    // колонка с которой требуется начать вывод изображения ...
-    switch (x) {
-    // определяем начальную колонку для выравнивания по левому краю
-    case OLED_LEFT:
-        _numX = 0;
-        break;
-    // определяем начальную колонку для выравнивания по центру
-    case OLED_CENTER:
-        _numX = (_width - w) / 2;
-        break;
-    //  определяем начальную колонку для выравнивания по правому краю
-    case OLED_RIGHT:
-        _numX = _width - w;
-        break;
-    // начальной колонкой останется та, на которой был закончен вывод предыдущего текста или изображения
-    case OLED_THIS:
-        _numX = _numX;
-        break;
-    //  начальная колонка определена пользователем
-    default:
-        _numX = x;
-        break;
-    }
-    // строка с которой требуется начать вывод изображения ...
-    switch (y) {
-    // определяем начальную строку для выравнивания по верхнему краю
-    case OLED_TOP:
-        _numY = h - 1;
-        break;
-    // определяем начальную строку для выравнивания по центру
-    case OLED_CENTER:
-        _numY = (_height - h) / 2;
-        break;
-    // определяем начальную строку для выравнивания по нижнему краю
-    case OLED_BOTTOM:
-        _numY = _height - 1;
-        break;
-    // начальной строкой останется та, на которой выведен предыдущий текст или изображение
-    case OLED_THIS:
-        _numY = _numY;
-        break;
-    // начальная строка определена пользователем
-    default:
-        _numY = y;
-        break;
-    }
-    // проходим по страницам изображения...
-    for (uint8_t p = 0; p < h; p++) {
-        // проходим по колонкам  изображения...
-        for (uint8_t k = 0; k < w; k++) {
-            // если массив изображения находится в памяти ОЗУ
-            if (mem == IMG_RAM) {
-                // получаем цвет очередного пикселя из p % 8 бита
-                // 2 + (p / 8 * w) + k байта, массива image
-                color = bitRead(image[2 + (p / 8 * w) + k], p % 8);
-            } else if (mem == IMG_ROM) {
-                // если массив изображения находится в памяти ПЗУ
-                // получаем цвет очередного пикселя из p % 8 бита
-                // 2 + (p / 8 * w) + k байта, массива image
-                color = bitRead(pgm_read_byte(&image[2 + (p / 8 * w) + k]), p % 8);
+void TroykaOLED::drawImage(const uint8_t* image, int16_t x, int16_t y, uint8_t mem) {
+    // Формат изображения с которым работает эта функция:
+    // 1 байт - ширина изображения в битах
+    // 2 байт - высота изображения в битах. Высота должна быть кратна 8!
+    // последующие байты - слева-направо, сверху-вниз, 8-битные столбцы данных
+    int16_t w = getImageWidth(image, mem);
+    int16_t h = getImageHeight(image, mem);
+    _interpretParameters(x, y, w, h);
+    uint64_t col;
+    // для столбцов где будет изображение...
+    for (int16_t i = 0; i < w; i++) {
+        // но только тех из них которые находятся в пределах экрана
+        if (_last.x + i < _width && _last.x + i >= 0) {
+            // создаем временный пустой столбец
+            col = 0;
+            // комбинируем 8 битные страницы изображения во временный столбец
+            for (int16_t j = 0; j < (h >> 3); j++) {
+                if (mem == IMG_ROM)
+                    col |= (uint64_t)(pgm_read_byte(&image[j * w + i + 2])) << (8 * j);
+                else
+                    col |= (uint64_t)image[j * w + i + 2] << (8 * j);
             }
-            // если у изображения есть фон или цвет пикселя белый
-            if (_stateImageBG || color) {
-                // прорисовываем пиксель в координате (_numX + k, _numY + p)
-                _drawPixel(_numX + k, _numY + p, color);
-            }
+            // в зависимости от "цвета" впечатываем временный столбец на реальный
+            _stamp(_last.x + i, _last.y, col, _imageColor);
         }
     }
-    // добавляем ширину изображения к координате _numX
-    _numX += w;
-    if (_stateAutoUpdate) {
-        _sendBuffer();
-    }
+    _last.x += w;
+    _change(_last.x, _last.x + w);
+    _AUTO_UPDATE();
 }
 
 uint8_t TroykaOLED::getPixel(int16_t x, int16_t y) {
@@ -535,6 +487,55 @@ uint8_t TroykaOLED::getImageWidth(const uint8_t* image, uint8_t mem) {
 uint8_t TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
     // возвращаем высоту изображения
     return (mem == IMG_RAM) ? image[1] : pgm_read_byte(&image[1]);
+}
+
+void TroykaOLED::_interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h) {
+    // колонка с которой требуется начать вывод текста ...
+    switch (x) {
+    // определяем начальную колонку для выравнивания по левому краю.
+    case OLED_LEFT:
+        _last.x = 0;
+        break;
+    // определяем начальную колонку для выравнивания по центру
+    case OLED_CENTER:
+        _last.x = (_width - w) / 2;
+        break;
+    // определяем начальную колонку для выравнивания по правому краю
+    case OLED_RIGHT:
+        _last.x = _width - w;
+        break;
+    // начальной колонкой останется та, на которой был закончен вывод предыдущего
+    // текста или изображения
+    case OLED_THIS: /*_last.x = _last.x;*/
+        break;
+    // начальная колонка определена пользователем
+    default:
+        _last.x = x;
+        break;
+    }
+    // строка с которой требуется начать вывод текста ...
+    switch (y) {
+    // определяем начальную строку для выравнивания по верхнему краю
+    case OLED_TOP:
+        _last.y = 0;
+        break;
+    // определяем начальную строку для выравнивания по центру
+    case OLED_CENTER:
+        _last.y = (_height - h) / 2;
+        break;
+    // определяем начальную строку для выравнивания по нижнему краю
+    case OLED_BOTTOM:
+        _last.y = _height - h;
+        break;
+    // начальной строкой останется та, на которой выведен предыдущий текст или
+    // изображение
+    case OLED_THIS: /*_last.y = _last.y;*/
+        break;
+    // начальная строка определена пользователем
+    default:
+        _last.y = y;
+        break;
+    }
 }
 
 void TroykaOLED::_print(char* data, int x, int y) {

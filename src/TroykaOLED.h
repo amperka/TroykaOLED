@@ -62,7 +62,7 @@ public:
     void drawLine(int16_t x2, int16_t y2, uint8_t color = WHITE);
     void drawRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2, bool fill = false, uint8_t color = WHITE);
     void drawCircle(int16_t x, int16_t y, uint8_t r, bool fill = false, uint8_t color = WHITE);
-    void drawImage(const uint8_t* image, int x = OLED_THIS, int y = OLED_THIS, uint8_t mem = IMG_ROM);
+    void drawImage(const uint8_t* image, int16_t x = OLED_THIS, int16_t y = OLED_THIS, uint8_t mem = IMG_ROM);
     uint8_t getPixel(int16_t x, int16_t y);
     uint8_t getWidth() { return _width; }
     uint8_t getHeigth() { return _height; }
@@ -112,6 +112,7 @@ private:
 
     void _drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
     void _drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
+    void _interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h);
     void _print(char*, int x, int y);
     char _itoa(uint8_t num);
     char* _codingCP866(char* data);
