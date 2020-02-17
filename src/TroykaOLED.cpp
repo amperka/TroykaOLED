@@ -10,6 +10,11 @@
 
 #include "TroykaOLED.h"
 
+#define _AUTO_UPDATE()      \
+    if (_stateAutoUpdate) { \
+        update();      \
+    }
+
 TroykaOLED::TroykaOLED(uint8_t i2cAddress, uint8_t width, uint8_t height) {
     _i2cAddress = i2cAddress;
     _width = width;
@@ -307,13 +312,11 @@ void TroykaOLED::print(double num, int x, int y, uint8_t sum) {
     }
 }
 
-void TroykaOLED::drawPixel(int x, int y, uint8_t color) {
+void TroykaOLED::drawPixel(int16_t x, int16_t y, uint8_t color) {
     _drawPixel(x, y, color);
-    if (_stateAutoUpdate) {
-        _sendBuffer();
-    }
-    _numX = x;
-    _numY = y;
+    _AUTO_UPDATE();
+    _last.x = x;
+    _last.y = y;
 }
 
 void TroykaOLED::drawLine(int x1, int y1, int x2, int y2, uint8_t color) {
@@ -484,16 +487,12 @@ void TroykaOLED::drawImage(const uint8_t* image, int x, int y, uint8_t mem) {
     }
 }
 
-bool TroykaOLED::getPixel(int x, int y) {
-    if (x < 0 || x > _height - 1 || y < 0 || y > _width - 1) {
-        return 0;
-    }
-    // определяем номер байта массива _bufferDisplay в котором находится пиксель
-    uint16_t numByte = (y / 8 * 128) + x;
-    // определяем номер бита в найденном байте, который соответсвует искомому пикселю
-    uint8_t numBit = y % 8;
-    // возвращаем цвет пикселя из бита numBit элемента numByte массива _bufferDisplay
-    return bitRead(_bufferDisplay[numByte], numBit);
+uint8_t TroykaOLED::getPixel(int16_t x, int16_t y) {
+    if (x >= 0 && x < _width && y >= 0 && y < _height)
+        return (_screenBuffer.column[x] >> y) == 1;
+    else
+        // за пределами экрана все черное
+        return BLACK;
 }
 
 uint8_t TroykaOLED::getImageWidth(const uint8_t* image, uint8_t mem) {
@@ -724,27 +723,27 @@ char* TroykaOLED::_codingCP866(char* StrIn) {
     return StrOut;
 }
 
-void TroykaOLED::_drawPixel(int x, int y, uint8_t color) {
-    if (x < 0 || x > _width - 1 || y < 0 || y > _height - 1) {
-        return;
+void TroykaOLED::_stamp(int16_t x, int16_t y, uint64_t body, uint8_t color) {
+    if (x >= 0 && x < _width && y >= 0 && y < _height) {
+        switch (color) {
+        case WHITE:
+            _screenBuffer.column[x] |= ((y == 0) ? body : ((y > 0) ? (body << y) : (body >> (-y))));
+            break;
+        case BLACK:
+            _screenBuffer.column[x] &= ~(((y == 0) ? body : ((y > 0) ? (body << y) : (body >> (-y)))));
+            break;
+        case INVERSE:
+            _screenBuffer.column[x] ^= ((y == 0) ? body : ((y > 0) ? (body << y) : (body >> (-y))));
+            break;
+        default:
+            break;
+        }
     }
-    // определяем номер страницы в которой должен находиться пиксель
-    uint8_t p = y / 8;
-    // определяем номер байта массива _bufferDisplay в котором требуется прорисовать пиксель
-    uint16_t numByte = (p * 128) + x;
-    // определяем номер бита в найденном байте, который соответсвует рисуемому пикселю
-    uint8_t numBit = y % 8;
-    switch (color) {
-    case WHITE:
-        _bufferDisplay[numByte] |= 1 << numBit;
-        break;
-    case BLACK:
-        _bufferDisplay[numByte] &= ~(1 << numBit);
-        break;
-    case INVERSE:
-        _bufferDisplay[numByte] ^= 1 << numBit;
-        break;
-    }
+}
+
+void TroykaOLED::_drawPixel(int16_t x, int16_t y, uint8_t color) {
+    _stamp(x, y, 1, color);
+    _change(x - 1, x + 1);
 }
 
 void TroykaOLED::_drawLine(int x1, int y1, int x2, int y2, uint8_t color) {

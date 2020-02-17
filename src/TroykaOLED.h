@@ -56,13 +56,13 @@ public:
     void print(int32_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
     void print(uint32_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
     void print(double n, int x = OLED_THIS, int y = OLED_THIS, uint8_t digits = 2);
-    void drawPixel(int x, int y, uint8_t color = WHITE);
+    void drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
     void drawLine(int x1, int y1, int x2, int y2, uint8_t color = WHITE);
     void drawLine(int x2, int y2, uint8_t color = WHITE);
     void drawRect(int x1, int y1, int x2, int y2, bool fill = false, uint8_t color = WHITE);
     void drawCircle(int x, int y, uint8_t r, bool fill = false, uint8_t color = WHITE);
     void drawImage(const uint8_t* image, int x = OLED_THIS, int y = OLED_THIS, uint8_t mem = IMG_ROM);
-    bool getPixel(int x, int y);
+    uint8_t getPixel(int16_t x, int16_t y);
     uint8_t getWidth() { return _width; }
     uint8_t getHeigth() { return _height; }
     uint8_t getFontWidth() { return _font.width; }
@@ -100,7 +100,7 @@ private:
         bool setFont = false;
     } _font;
 
-    void _drawPixel(int x, int y, uint8_t color = WHITE);
+    void _drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
     void _drawLine(int x1, int y1, int x2, int y2, uint8_t color = WHITE);
     void _print(char*, int x, int y);
     char _itoa(uint8_t num);
@@ -109,6 +109,7 @@ private:
     void _sendCommand(uint8_t command, uint8_t value);
     void _sendCommand(uint8_t command, uint8_t value1, uint8_t value2);
     void _sendData(uint8_t* data, uint8_t sum);
+    void _stamp(int16_t x, int16_t y, uint64_t body, uint8_t color);
     void _sendBuffer();
 };
 
