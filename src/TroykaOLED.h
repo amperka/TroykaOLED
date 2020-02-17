@@ -93,13 +93,10 @@ private:
     } _screenBuffer;
 
     struct {
-        const uint8_t* fontData;
+        const uint8_t* data;
+        const uint8_t* remap;
         uint8_t width = 0;
         uint8_t height = 0;
-        uint8_t firstSymbol = 0;
-        uint8_t sumSymbol = 0;
-        uint8_t startSpace[3];
-        uint8_t sumSpace[3];
         bool invert = false;
         uint8_t color = WHITE;
         bool setFont = false;
@@ -113,6 +110,7 @@ private:
     void _drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
     void _drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
     void _interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h);
+    uint8_t _fontRemapping(char c);
     void _print(char*, int x, int y);
     char _itoa(uint8_t num);
     char* _codingCP866(char* data);

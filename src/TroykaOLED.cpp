@@ -122,49 +122,28 @@ void TroykaOLED::textColor(uint8_t color) { _font.color = color; }
 void TroykaOLED::imageColor(uint8_t color) { _imageColor = color; }
 
 void TroykaOLED::setFont(const uint8_t* fontData) {
-    // сохраняем указатель на первый байт массива в области памяти программ
-    _font.fontData = fontData;
-    //  сохраняем ширину символов выбранного шрифта читая её из 0 байта массива по указателю fontData
+    _font.data = fontData;
+
     _font.width = pgm_read_byte(&fontData[0]);
-    // сохраняем высоту символов выбранного шрифта читая её из 1 байта массива по указателю fontData
     _font.height = pgm_read_byte(&fontData[1]);
-    // сохраняем код первого симола выбран. шрифта читая его из 2 байта массива по указателю fontData
-    _font.firstSymbol = pgm_read_byte(&fontData[2]);
-    // сохраняем количество символов в выбр шрифте читая их  из 3 байта массива по указателю fontData
-    _font.sumSymbol = pgm_read_byte(&fontData[3]);
-    //  устанавливаем флаг выбора шрифта
-    _font.setFont = true;
-    // определяем позицию бита указывающего количество пустых интервалов в массиве шрифта.
-    uint16_t i = (uint16_t)_font.sumSymbol * _font.width * _font.height / 8 + 0x04;
-    // определяем количество пустых интервалов в массиве шрифта.
-    uint16_t j = pgm_read_byte(&fontData[i]);
-    // указываем что первый пустой интервал в массиве шрифта находится после символа с кодом (0xFF) и состоит из 0 символов
-    _font.startSpace[0] = 0xFF;
-    _font.sumSpace[0] = 0;
-    // указываем что второй пустой интервал в массиве шрифта находится после символа с кодом (0xFF) и состоит из 0 символов
-    _font.startSpace[1] = 0xFF;
-    _font.sumSpace[1] = 0;
-    // указываем что третий пустой интервал в массиве шрифта находится после символа с кодом (0xFF) и состоит из 0 символов
-    _font.startSpace[2] = 0xFF;
-    _font.sumSpace[2] = 0;
-    // если количество пустых интервалов больше 0
-    // сохраняем начало первого пустого интервала символов и размер первого пустого интервала символов
-    if (j > 0) {
-        _font.startSpace[0] = pgm_read_byte(&fontData[i + 1]);
-        _font.sumSpace[0] = pgm_read_byte(&fontData[i + 2]);
+    char type = pgm_read_byte(&fontData[2]);
+
+    if (_font.height % 8 != 0) {
+        _font.setFont = false;
+        return;
     }
-    // если количество пустых интервалов больше 1
-    // сохраняем начало второго пустого интервала символов и размер второго пустого интервала символов
-    if (j > 1) {
-        _font.startSpace[1] = pgm_read_byte(&fontData[i + 3]);
-        _font.sumSpace[1] = pgm_read_byte(&fontData[i + 4]);
+
+    if (type == 'D') {
+        _font.remap = digits_font_remap;
+        _font.setFont = true;
+    } else if (type == 'A') {
+        _font.remap = alfabet_font_remap;
+        _font.setFont = true;
+    } else {
+        _font.setFont = false;
     }
-    // если количество пустых интервалов больше 2
-    // сохраняем начало третьего пустого интервала символов и размер третьего пустого интервала символов
-    if (j > 2) {
-        _font.startSpace[2] = pgm_read_byte(&fontData[i + 5]);
-        _font.sumSpace[2] = pgm_read_byte(&fontData[i + 6]);
-    }
+
+    _font.color = WHITE;
 }
 
 void TroykaOLED::setCoding(uint8_t codingName) {
@@ -486,6 +465,10 @@ uint8_t TroykaOLED::getImageWidth(const uint8_t* image, uint8_t mem) {
 // возвращает высоту изображения в в точках, mem - тип памяти
 uint8_t TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
     return (mem == IMG_RAM) ? image[1] : pgm_read_byte(&image[1]);
+}
+
+uint8_t TroykaOLED::_fontRemapping(char c) {
+    return pgm_read_byte(&_font.remap[(uint8_t)c]);
 }
 
 void TroykaOLED::_interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h) {
