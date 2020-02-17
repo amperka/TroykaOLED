@@ -114,7 +114,7 @@ private:
     void _print(char c, int16_t x, int16_t y);
     void _print(char* s, int16_t x, int16_t y);
     char _itoa(uint8_t num);
-    char* _codingCP866(char* data);
+    char* _codingCP866(uint8_t* data);
     void _sendCommand(uint8_t command);
     void _sendCommand(uint8_t command, uint8_t value);
     void _sendCommand(uint8_t command, uint8_t value1, uint8_t value2);

@@ -146,9 +146,8 @@ void TroykaOLED::setFont(const uint8_t* fontData) {
     _font.color = WHITE;
 }
 
-void TroykaOLED::setCoding(uint8_t codingName) {
-    _codingName = codingName;
-}
+void TroykaOLED::setCoding(uint8_t codingName) { _codingName = codingName; }
+
 
 void TroykaOLED::setCursor(int numX, int numY) {
     if (numX < _width) {
@@ -577,83 +576,88 @@ char TroykaOLED::_itoa(uint8_t num) {
     return char(num + (num < 10 ? 48 : 55));
 }
 
-char* TroykaOLED::_codingCP866(char* StrIn) {
+char* TroykaOLED::_codingCP866(uint8_t* strIn) {
     // определяем строку для вывода результата
-    char* StrOut = StrIn;
-    // переменненые для хранения номера сивола в строках StrIn и StrOut
+    uint8_t* strOut = strIn;
+    // переменненые для хранения номера сивола в строках strIn и strOut
     uint8_t numIn = 0, numOut = 0;
-    // переменненые для хранения текущего кода символа в строках StrIn и StrOut
-    uint8_t charThis = StrIn[0], charNext = StrIn[1];
+    // переменненые для хранения текущего кода символа в строках strIn и strOut
+    uint8_t charThis = strIn[0], charNext = strIn[1];
     switch (_codingName) {
     // преобразуем текст из кодировки UTF-8:
     case TXT_UTF8:
         while (charThis > 0 && numIn < 0xFF) {
-            // если код текущего символа равен 208, а за ним следует символ с кодом 144...191
-            // значит это буква «А»...«п» требующая преобразования к коду 128...175
+            // если код текущего символа равен 208, а за ним следует символ с кодом
+            // 144...191 значит это буква «А»...«п» требующая преобразования к коду
+            // 128...175
             if (charThis == 0xD0 && charNext >= 0x90 && charNext <= 0xBF) {
-                StrOut[numOut] = charNext - 0x10;
+                strOut[numOut] = charNext - 0x10;
                 numIn++;
             } else if (charThis == 0xD0 && charNext == 0x81) {
-                // если код текущего символа равен 208, а за ним следует символ с кодом 129
-                // значит это буква «Ё» требующая преобразования к коду 240
-                StrOut[numOut] = 0xF0;
+                // если код текущего символа равен 208, а за ним следует символ с кодом
+                // 129 значит это буква «Ё» требующая преобразования к коду 240
+                strOut[numOut] = 0xF1;
                 numIn++;
             } else if (charThis == 0xD1 && charNext >= 0x80 && charNext <= 0x8F) {
-                // если код текущего символа равен 209, а за ним следует символ с кодом 128...143
-                // значит это буква «р»...«я» требующая преобразования к коду 224...239
-                StrOut[numOut] = charNext + 0x60;
+                // если код текущего символа равен 209, а за ним следует символ с кодом
+                // 128...143 значит это буква «р»...«я» требующая преобразования к коду
+                // 224...239
+                strOut[numOut] = charNext + 0x61;
                 numIn++;
             } else if (charThis == 0xD1 && charNext == 0x91) {
-                // если код текущего символа равен 209, а за ним следует символ с кодом 145
-                // значит это буква «ё» требующая преобразования к коду 241
-                StrOut[numOut] = 0xF1;
+                // если код текущего символа равен 209, а за ним следует символ с кодом
+                // 145 значит это буква «ё» требующая преобразования к коду 241
+                strOut[numOut] = 0xF2;
                 numIn++;
             } else {
                 // иначе не меняем символ
-                StrOut[numOut] = charThis;
+                strOut[numOut] = charThis;
             }
             // переходим к следующему символу
             numIn++;
             numOut++;
-            charThis = StrIn[numIn];
-            charNext = StrIn[numIn + 1];
-            // добавляем символ конца строки и возвращаем строку StrOut
+            charThis = strIn[numIn];
+            charNext = strIn[numIn + 1];
+            // добавляем символ конца строки и возвращаем строку strOut
         }
-        StrOut[numOut] = '\0';
+        strOut[numOut] = 0;
         break;
     //преобразуем текст из кодировки WINDOWS-1251:
     case TXT_WIN1251:
-        // если код текущего символа строки StrIn больше 0 и номер текушего символа строки StrIn меньше 255
+        // если код текущего символа строки strIn больше 0 и номер текушего символа
+        // строки strIn меньше 255
         while (charThis > 0 && numIn < 0xFF) {
             // если код текущего символа равен 192...239
             // значит это буква «А»...«п» требующая преобразования к коду 128...175
             if (charThis >= 0xC0 && charThis <= 0xEF) {
-                StrOut[numOut] = charThis - 0x40;
-            } else if (charThis >= 0xF0 && charThis <= 0xFF) {
+                strOut[numOut] = charThis - 0x40;
+            } else if (charThis >= 0xF0) {
                 // если код текущего символа равен 240...255
                 // значит это буква «р»...«я» требующая преобразования к коду 224...239
-                StrOut[numOut] = charThis - 0x10;
+                strOut[numOut] = charThis - 0x10;
             } else if (charThis == 0xA8) {
-                // если код текущего символа равен 168, значит это буква «Ё» требующая преобразования к коду 240
-                StrOut[numOut] = 0xF0;
+                // если код текущего символа равен 168, значит это буква «Ё» требующая
+                // преобразования к коду 240
+                strOut[numOut] = 0xF0;
             } else if (charThis == 0xB8) {
-                // если код текущего символа равен 184, значит это буква «ё» требующая преобразования к коду 241
-                StrOut[numOut] = 0xF1;
+                // если код текущего символа равен 184, значит это буква «ё» требующая
+                // преобразования к коду 241
+                strOut[numOut] = 0xF1;
             } else {
                 // иначе не меняем символ
-                StrOut[numOut] = charThis;
+                strOut[numOut] = charThis;
             }
             // переходим к следующему символу
             numIn++;
             numOut++;
-            charThis = StrIn[numIn];
+            charThis = strIn[numIn];
             // добавляем символ конца строки
         }
-        StrOut[numOut] = '\0';
+        strOut[numOut] = 0;
         break;
     }
-    // возвращаем строку StrOut
-    return StrOut;
+    // возвращаем строку strOut
+    return (char*)strOut;
 }
 
 void TroykaOLED::_stamp(int16_t x, int16_t y, uint64_t body, uint8_t color) {
