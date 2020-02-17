@@ -339,28 +339,59 @@ void TroykaOLED::drawLine(int16_t x2, int16_t y2, uint8_t color) {
     drawLine(_last.x, _last.y, x2, y2, color);
 }
 
-void TroykaOLED::drawRect(int x1, int y1, int x2, int y2, bool fill, uint8_t color) {
+void TroykaOLED::drawRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2, bool fill,
+    uint8_t color) {
+    uint64_t col = 0;
+    uint64_t frm = 0;
+    uint8_t xStart, xEnd, yStart = 0, yEnd = 0;
+    // проверяем направление рисования
+    if (x2 > x1) {
+        xStart = x1;
+        xEnd = x2;
+    } else {
+        xStart = x2;
+        xEnd = x1;
+    }
+    if (y2 > y1) {
+        yStart = y1;
+        yEnd = y2;
+    } else {
+        xStart = y2;
+        xEnd = y1;
+    }
+    // рисуем вертикальную палочку и "2 точки" для горизонтальных линий
+    for (int16_t j = 0; j < (yEnd - yStart); j++) {
+        frm <<= 1;
+        if (j == 0 || j == (yEnd - yStart - 1))
+            frm |= 1;
+        col <<= 1;
+        col |= 1;
+    }
+    // сдвигаем их по оси y
+    for (int16_t j = 0; j < yStart; j++) {
+        col <<= 1;
+        frm <<= 1;
+    }
+
     if (fill) {
-        if (x1 < x2) {
-            for (int x = x1; x <= x2; x++) {
-                _drawLine(x, y1, x, y2, color);
-            }
-        } else {
-            for (int x = x1; x >= x2; x--) {
-                _drawLine(x, y1, x, y2, color);
+        // если сплошной - заливаем столбцы вертикальными палочками
+        for (int16_t i = xStart; i < xEnd; i++) {
+            if (i >= 0 && i < _width) {
+                _stamp(i, 0, col, color);
             }
         }
     } else {
-        _drawLine(x1, y1, x2, y1, color);
-        _drawLine(x2, y2, x2, y1, color);
-        _drawLine(x2, y2, x1, y2, color);
-        _drawLine(x1, y1, x1, y2, color);
+        // если не сплошной - сначала по краям рисуем палочки
+        _screenBuffer.column[xStart] |= col;
+        _screenBuffer.column[xEnd - 1] |= col;
+        // потом остальное заполняем горизонтальными линиями
+        for (int16_t i = xStart + 1; i < xEnd - 1; i++) {
+            if (i >= 0 && i < _width) {
+                _stamp(i, 0, frm, color);
+            }
+        }
     }
-    if (_stateAutoUpdate) {
-        _sendBuffer();
-    }
-    _numX = x2;
-    _numY = y2;
+    _AUTO_UPDATE();
 }
 
 void TroykaOLED::drawCircle(int16_t x, int16_t y, uint8_t r, bool fill, uint8_t color) {
