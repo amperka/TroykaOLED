@@ -41,8 +41,8 @@ public:
     void clearDisplay();
     void invertDisplay(bool stateInvert = true);
     void invertText(bool stateInvertText = true);
-    void bgText(bool stateTextBG = true);
-    void bgImage(bool stateImageBG = true);
+    void textColor(uint8_t color = WHITE);
+    void imageColor(uint8_t color = WHITE);
     void setFont(const uint8_t* fontData);
     void setCoding(uint8_t codingName = false);
     void setCursor(int numX, int numY);
@@ -85,7 +85,7 @@ private:
     uint8_t _codingName;
     bool _stateInvert;
     bool _stateAutoUpdate;
-    bool _stateImageBG;
+    uint8_t _imageColor;
 
     union {
         uint64_t column[HORIZONTAL_SIZE];
@@ -101,7 +101,7 @@ private:
         uint8_t startSpace[3];
         uint8_t sumSpace[3];
         bool invert = false;
-        bool background = true;
+        uint8_t color = WHITE;
         bool setFont = false;
     } _font;
 

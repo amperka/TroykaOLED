@@ -118,13 +118,9 @@ void TroykaOLED::invertDisplay(bool stateInvert) {
 
 void TroykaOLED::invertText(bool stateInvertText) { _font.invert = stateInvertText; }
 
-void TroykaOLED::bgText(bool stateTextBG) {
-    _font.background = stateTextBG;
-}
+void TroykaOLED::textColor(uint8_t color) { _font.color = color; }
 
-void TroykaOLED::bgImage(bool stateImageBG) {
-    _stateImageBG = stateImageBG;
-}
+void TroykaOLED::imageColor(uint8_t color) { _imageColor = color; }
 
 void TroykaOLED::setFont(const uint8_t* fontData) {
     // сохраняем указатель на первый байт массива в области памяти программ
