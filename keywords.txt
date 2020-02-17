@@ -33,7 +33,7 @@ drawCircle 			KEYWORD2
 drawImage 			KEYWORD2
 getPixel 			KEYWORD2
 getWidth 			KEYWORD2
-getHeigth 			KEYWORD2
+getHeight 			KEYWORD2
 getFontWidth 		KEYWORD2
 getFontHeight 		KEYWORD2
 getImageWidth 		KEYWORD2
