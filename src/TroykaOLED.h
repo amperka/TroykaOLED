@@ -9,12 +9,12 @@
 #include "./utility/defaultFonts.h"
 #include "./utility/defaultImages.h"
 
-#define OLED_TOP 250
-#define OLED_BOTTOM 251
-#define OLED_LEFT 252
-#define OLED_RIGHT 253
-#define OLED_CENTER 254
-#define OLED_THIS 255
+constexpr int16_t OLED_TOP = 32762;
+constexpr int16_t OLED_BOTTOM = 32763;
+constexpr int16_t OLED_LEFT = 32764;
+constexpr int16_t OLED_RIGHT = 32765;
+constexpr int16_t OLED_CENTER = 32766;
+constexpr int16_t OLED_THIS = 32767;
 
 constexpr int8_t IMG_RAM = 0;
 constexpr int8_t IMG_ROM = 1;
