@@ -28,40 +28,37 @@ void TroykaOLED::begin(TwoWire* wire) {
     // выключаем дисплей
     _sendCommand(SSD1306_DISPLAY_OFF);
     // устанавливаем частоту обновления дисплея в значение 0x80 (по умолчанию)
-    _sendCommand(SSD1306_SET_DISPLAY_CLOCK);
-    _sendCommand(0x80);
-    // устанавливаем multiplex ratio (коэффициент мультиплексирования COM выводов) в значение 0x3F (по умолчанию)
-    _sendCommand(SSD1306_SET_MULTIPLEX_RATIO);
-    _sendCommand(0x3F);
+    _sendCommand(SSD1306_SET_DISPLAY_CLOCK, 0x80);
+    // устанавливаем multiplex ratio (коэффициент мультиплексирования COM выводов)
+    // в значение 0x3F (по умолчанию)
+    _sendCommand(SSD1306_SET_MULTIPLEX_RATIO, 0x3f);
     // устанавливаем смещение дисплея в 0 (без смещения)
-    _sendCommand(SSD1306_SET_DISPLAY_OFFSET);
-    _sendCommand(0x00);
+    _sendCommand(SSD1306_SET_DISPLAY_OFFSET, 0);
     // устанавливаем смещение ОЗУ в значение 0 (без смещения)
     _sendCommand(SSD1306_SET_START_LINE | 0);
-    // настраиваем схему питания (0x14 - включить внутренний DC-DC преобразователь, 0x10 - отключить внутренний DC/DC)
-    _sendCommand(SSD1306_CHARGE_DCDC_PUMP);
-    _sendCommand(0x14);
-    // устанавливаем режим автоматической адресации (0x00-горизонтальная, 0x01-вертикальная, 0x10-страничная)
-    _sendCommand(SSD1306_ADDR_MODE);
-    _sendCommand(0x00);
+    // настраиваем схему питания (0x14 - включить внутренний DC-DC
+    // преобразователь, 0x10 - отключить внутренний DC/DC)
+    _sendCommand(SSD1306_CHARGE_DCDC_PUMP, 0x14);
+    // устанавливаем режим автоматической адресации (0x00-горизонтальная,
+    // 0x01-вертикальная, 0x10-страничная)
+    _sendCommand(SSD1306_ADDR_MODE, 0x01);
     // устанавливаем режим строчной развертки (слева/направо)
     _sendCommand(SSD1306_SET_REMAP_L_TO_R);
     // устанавливаем режим кадровой развертки (сверху/вниз)
     _sendCommand(SSD1306_SET_REMAP_T_TO_D);
-    // устанавливаем аппаратную конфигурация COM выводов в значение 0x12 (по умолчанию)
-    _sendCommand(SSD1306_SET_COM_PINS);
-    _sendCommand(0x12);
-    // устанавливаем контрастность в значение 0xCF (допустимы значения от 0x00 до 0xFF)
-    _sendCommand(SSD1306_SET_CONTRAST);
-    _sendCommand(0xFF);
-    // настраиваем схему DC/DC преобразователя (0xF1 - Vcc снимается с DC/DC преобразователя, 0x22 - Vcc подается извне)
-    _sendCommand(SSD1306_SET_PRECHARGE_PERIOD);
-    _sendCommand(0xF1);
-    // устанавливаем питание светодиодов VcomH в значение выше чем по умолчанию: 0x30
-    // это увеличит яркость дисплея
-    // допустимые значения: 0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70
-    _sendCommand(SSD1306_SET_VCOM_DESELECT);
-    _sendCommand(0x40);
+    // устанавливаем аппаратную конфигурация COM выводов в значение 0x12 (по
+    // умолчанию)
+    _sendCommand(SSD1306_SET_COM_PINS, 0x12);
+    // устанавливаем контрастность в значение 0xCF (допустимы значения от 0x00 до
+    // 0xFF)
+    _sendCommand(SSD1306_SET_CONTRAST, 0xff);
+    // настраиваем схему DC/DC преобразователя (0xF1 - Vcc снимается с DC/DC
+    // преобразователя, 0x22 - Vcc подается извне)
+    _sendCommand(SSD1306_SET_PRECHARGE_PERIOD, 0xf1);
+    // устанавливаем питание светодиодов VcomH в значение выше чем по умолчанию:
+    // 0x30 это увеличит яркость дисплея допустимые значения: 0x00, 0x10, 0x20,
+    // 0x30, 0x40, 0x50, 0x60, 0x70
+    _sendCommand(SSD1306_SET_VCOM_DESELECT, 0x40);
     // разрешаем отображать содержимое RAM памяти
     _sendCommand(SSD1306_RAM_ON);
     // отключаем инверсию
