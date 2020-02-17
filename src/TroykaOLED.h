@@ -61,7 +61,7 @@ public:
     void drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
     void drawLine(int16_t x2, int16_t y2, uint8_t color = WHITE);
     void drawRect(int x1, int y1, int x2, int y2, bool fill = false, uint8_t color = WHITE);
-    void drawCircle(int x, int y, uint8_t r, bool fill = false, uint8_t color = WHITE);
+    void drawCircle(int16_t x, int16_t y, uint8_t r, bool fill = false, uint8_t color = WHITE);
     void drawImage(const uint8_t* image, int x = OLED_THIS, int y = OLED_THIS, uint8_t mem = IMG_ROM);
     uint8_t getPixel(int16_t x, int16_t y);
     uint8_t getWidth() { return _width; }

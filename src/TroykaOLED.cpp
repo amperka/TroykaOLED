@@ -363,10 +363,10 @@ void TroykaOLED::drawRect(int x1, int y1, int x2, int y2, bool fill, uint8_t col
     _numY = y2;
 }
 
-void TroykaOLED::drawCircle(int x, int y, uint8_t r, bool fill, uint8_t color) {
+void TroykaOLED::drawCircle(int16_t x, int16_t y, uint8_t r, bool fill, uint8_t color) {
     // x1,y1 - положительные координаты точек круга с центром 00
     // p - отрицательная парабола
-    int x1 = 0, y1 = r, p = 1 - r;
+    int16_t x1 = 0, y1 = r, p = 1 - r;
     // цикл будет выполняться пока координата x не станет чуть меньше y
     // прочертит дугу от 0 до 45° - это 1/8 часть круга
     while (x1 < y1 + 1) {
@@ -408,11 +408,9 @@ void TroykaOLED::drawCircle(int x, int y, uint8_t r, bool fill, uint8_t color) {
         x1++;
         p += x1 * 2;
     }
-    if (_stateAutoUpdate) {
-        _sendBuffer();
-    }
-    _numX = x;
-    _numY = y;
+    _AUTO_UPDATE();
+    _last.x = x;
+    _last.y = y;
 }
 
 void TroykaOLED::drawImage(const uint8_t* image, int x, int y, uint8_t mem) {
