@@ -11,14 +11,15 @@ void setup() {
     myOLED.setCoding(TXT_UTF8);
     //myOLED.setCoding(TXT_CP866);
     //myOLED.setCoding(TXT_WIN1251);
-    // выбираем шрифт 6×8 с поддержкой кириллицы
-    myOLED.setFont(fontRus6x8);
+    // выбираем шрифт 6×8
+    myOLED.setFont(alfabet6x8);
     // печатаем строку с координатами начала текста
     myOLED.print("Привет мир!", OLED_CENTER, 10);
-    // выбираем шрифт 12×10 с поддержкой кириллицы
-    myOLED.setFont(fontRus12x10);
+    // выбираем шрифт 12×16
+    myOLED.setFont(alfabet12x16);
     // печатаем строку с координатами начала текста
     myOLED.print("Амперка", OLED_CENTER, 20);
+    myOLED.update();
 }
 
 void loop() {

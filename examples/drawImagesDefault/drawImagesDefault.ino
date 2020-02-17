@@ -16,7 +16,8 @@ void setup() {
     // выводим изображение батарейки
     myOLED.drawImage(battery3, OLED_RIGHT, OLED_TOP);
     // выводим изображение письма
-    myOLED.drawImage(mesege, OLED_CENTER, OLED_CENTER);
+    myOLED.drawImage(message, OLED_CENTER, OLED_CENTER);
+    myOLED.update();
 }
 
 void loop() {

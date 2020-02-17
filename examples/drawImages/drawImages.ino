@@ -78,6 +78,7 @@ void setup() {
     myOLED.invertDisplay(true);
     // выводи изображение с координатами верхнего левого угла
     myOLED.drawImage(alina, 0, 0);
+    myOLED.update();
 }
 
 void loop() {
