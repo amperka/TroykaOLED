@@ -75,8 +75,12 @@ private:
     uint8_t _i2cAddress;
     uint8_t _width;
     uint8_t _height;
-    uint8_t _numX;
-    uint8_t _numY;
+    
+    struct {
+        int16_t x;
+        int16_t y;
+    } _last;
+
     uint8_t _codingName;
     bool _stateInvert;
     bool _stateAutoUpdate;
