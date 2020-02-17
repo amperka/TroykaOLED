@@ -5,20 +5,19 @@
 TroykaOLED myOLED(0x3C);
 
 void setup() {
-  // инициализируем дисплей
-  myOLED.begin();
-  // выводим изображение сигнала связи
-  myOLED.drawImage(signal4, OLED_LEFT, OLED_TOP);
-  // выводим изображение антенны
-  myOLED.drawImage(antenna, 12, OLED_TOP);
-  // выводим изображение bluetooth
-  myOLED.drawImage(bluetooth, 24, OLED_TOP);
-  // выводим изображение батарейки
-  myOLED.drawImage(battery3, OLED_RIGHT, OLED_TOP);
-  // выводим изображение письма
-  myOLED.drawImage(mesege, OLED_CENTER, OLED_CENTER);
+    // инициализируем дисплей
+    myOLED.begin();
+    // выводим изображение сигнала связи
+    myOLED.drawImage(signal4, OLED_LEFT, OLED_TOP);
+    // выводим изображение антенны
+    myOLED.drawImage(antenna, 12, OLED_TOP);
+    // выводим изображение bluetooth
+    myOLED.drawImage(bluetooth, 24, OLED_TOP);
+    // выводим изображение батарейки
+    myOLED.drawImage(battery3, OLED_RIGHT, OLED_TOP);
+    // выводим изображение письма
+    myOLED.drawImage(mesege, OLED_CENTER, OLED_CENTER);
 }
 
 void loop() {
-
 }
