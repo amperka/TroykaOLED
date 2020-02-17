@@ -253,6 +253,45 @@ void TroykaOLED::print(uint32_t num, int x, int y, uint8_t base) {
     print(k, x, y);
 }
 
+// служебная подпрограмма для конвертора систем счисления
+uint8_t TroykaOLED::_punchDigits(uint32_t number, char* digitsArray, uint8_t position, uint8_t base) {
+    while (number > 0) {
+        digitsArray[position] = _itoa(number % base);
+        number /= base;
+        position--;
+    }
+    return position;
+}
+
+void TroykaOLED::_radixConverter(uint32_t number, bool sign, uint8_t bits,
+    uint8_t base, int16_t x, int16_t y) {
+    // убираем лишние "минусы"-FF из исходного числа
+    switch (bits) {
+    case 8:
+        number = number & 0xFF;
+        break;
+    case 16:
+        number = number & 0xFFFF;
+        break;
+    default:
+        break;
+    }
+    char dig[bits + 1];
+    dig[bits] = 0;
+    uint8_t pos = bits - 1;
+    // печатаем в массив цифры
+    pos = _punchDigits(number, dig, pos, base);
+    // добавляем минус спереди
+    dig[pos] = '-';
+
+    if (sign)
+        // если число было отрицательное - выводим вместе с минусом
+        print(&dig[pos], x, y);
+    else
+        // иначе выводим без минуса
+        print(&dig[pos + 1], x, y);
+}
+
 void TroykaOLED::print(double num, int x, int y, uint8_t sum) {
     uint32_t i = 1, j = 0, k = 0;
     j = sum;
@@ -567,9 +606,8 @@ void TroykaOLED::_print(char* line, int16_t x, int16_t y) {
 
 //  параметр: одна цифра от 0 до 15
 //  преобразуем цифры 0-9 в символ с кодом 48-57, а цифры 10-15 в символ с кодом 65-71
-char TroykaOLED::_itoa(uint8_t num) {
-    return char(num + (num < 10 ? 48 : 55));
-}
+char TroykaOLED::_itoa(uint8_t number) { return uint8_t(number + (number < 10 ? '0' : 'A')); }
+
 
 char* TroykaOLED::_codingCP866(uint8_t* strIn) {
     // определяем строку для вывода результата

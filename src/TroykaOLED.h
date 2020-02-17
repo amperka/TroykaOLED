@@ -110,6 +110,8 @@ private:
     void _drawPixel(int16_t x, int16_t y, uint8_t color = WHITE);
     void _drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
     void _interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h);
+    uint8_t _punchDigits(uint32_t n, char* d, uint8_t p, uint8_t b);
+    void _radixConverter(uint32_t num, bool sign, uint8_t bits, uint8_t base, int16_t x, int16_t y);
     uint8_t _fontRemapping(char c);
     void _print(char c, int16_t x, int16_t y);
     void _print(char* s, int16_t x, int16_t y);
