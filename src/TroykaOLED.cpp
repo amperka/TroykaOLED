@@ -808,20 +808,30 @@ void TroykaOLED::_change(int16_t left, int16_t right) {
 
 // отправка буфера (массива _bufferDisplay) в дисплей
 void TroykaOLED::_sendBuffer() {
-    _sendCommand(SSD1306_ADDR_PAGE);
-    _sendCommand(0);
-    _sendCommand(_height / 8 - 1);
-    _sendCommand(SSD1306_ADDR_COLUMN);
-    _sendCommand(0);
-    _sendCommand(_width - 1);
+    _sendCommand(SSD1306_ADDR_PAGE, 0, _height / 8 - 1);
+    _sendCommand(SSD1306_ADDR_COLUMN, 0, _width - 1);
 
-    for (int i = 0; i < _width * _height / 8; i++) {
+    for (int16_t i = 0; i < _width * _height / 8; /* realy blank */) {
         _wire->beginTransmission(_i2cAddress);
         _wire->write(0x40);
         for (uint8_t x = 0; x < 16; x++) {
-            _wire->write(_bufferDisplay[i++]);
+            _wire->write(_screenBuffer.asBytes[i++]);
         }
-        i--;
+        _wire->endTransmission();
+    }
+}
+
+// отправка части буфера (столбцы от start до end) в дисплей
+void TroykaOLED::_sendColumns(uint8_t start, uint8_t end) {
+    _sendCommand(SSD1306_ADDR_PAGE, 0, _height / 8 - 1);
+    _sendCommand(SSD1306_ADDR_COLUMN, start, end);
+
+    for (int16_t i = start * 8; i < (end + 1) * 8; /* realy blank */) {
+        _wire->beginTransmission(_i2cAddress);
+        _wire->write(0x40);
+        for (uint8_t x = 0; x < 8; x++) {
+            _wire->write(_screenBuffer.asBytes[i++]);
+        }
         _wire->endTransmission();
     }
 }

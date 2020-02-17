@@ -121,6 +121,7 @@ private:
     void _stamp(int16_t x, int16_t y, uint64_t body, uint8_t color);
     void _sendBuffer();
     void _change(int16_t l, int16_t r);
+    void _sendColumns(uint8_t start, uint8_t end);
 };
 
 #endif // __TROYKA_OLED_H__
