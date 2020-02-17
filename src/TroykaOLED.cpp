@@ -148,17 +148,12 @@ void TroykaOLED::setFont(const uint8_t* fontData) {
 
 void TroykaOLED::setCoding(uint8_t codingName) { _codingName = codingName; }
 
-
-void TroykaOLED::setCursor(int numX, int numY) {
-    if (numX < _width) {
-        _numX = numX;
-    }
-    if (numY < _height) {
-        _numY = numY;
-    }
+void TroykaOLED::setCursor(int16_t x, int16_t y) {
+    _last.x = x;
+    _last.y = y;
 }
 
-void TroykaOLED::print(char character, int16_t x, int16_t y) { 
+void TroykaOLED::print(char character, int16_t x, int16_t y) {
     _print(character, x, y);
 }
 
