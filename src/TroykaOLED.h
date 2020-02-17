@@ -32,12 +32,12 @@ constexpr uint8_t VERTICAL_SIZE = 64;
 
 class TroykaOLED {
 public:
-    TroykaOLED(uint8_t address = 0x3C, uint8_t width = 128, uint8_t heigth = 64);
+    TroykaOLED(uint8_t address = 0x3C, uint8_t width = HORIZONTAL_SIZE, uint8_t height = VERTICAL_SIZE);
     void begin(TwoWire* wire = &Wire);
     void update();
     void updateAll();
     void autoUpdate(bool stateAutoUpdate = true);
-    void setBrigtness(uint8_t brigtness);
+    void setBrightness(uint8_t brightness);
     void clearDisplay();
     void invertDisplay(bool stateInvert = true);
     void invertText(bool stateInvertText = true);
@@ -65,7 +65,7 @@ public:
     void drawImage(const uint8_t* image, int16_t x = OLED_THIS, int16_t y = OLED_THIS, uint8_t mem = IMG_ROM);
     uint8_t getPixel(int16_t x, int16_t y);
     uint8_t getWidth() { return _width; }
-    uint8_t getHeigth() { return _height; }
+    uint8_t getHeight() { return _height; }
     uint8_t getFontWidth() { return _font.width; }
     uint8_t getFontHeight() { return _font.height; }
     uint8_t getImageWidth(const uint8_t* image, uint8_t mem = IMG_ROM);
@@ -76,7 +76,7 @@ private:
     uint8_t _i2cAddress;
     uint8_t _width;
     uint8_t _height;
-    
+
     struct {
         int16_t x;
         int16_t y;
