@@ -27,6 +27,9 @@ constexpr int16_t BLACK = 0;
 constexpr int16_t WHITE = 1;
 constexpr int16_t INVERSE = 2;
 
+constexpr uint8_t HORIZONTAL_SIZE = 128;
+constexpr uint8_t VERTICAL_SIZE = 64;
+
 class TroykaOLED {
 public:
     TroykaOLED(uint8_t address = 0x3C, uint8_t width = 128, uint8_t heigth = 64);
@@ -78,7 +81,12 @@ private:
     bool _stateInvert;
     bool _stateAutoUpdate;
     bool _stateImageBG;
-    uint8_t* _bufferDisplay;
+
+    union {
+        uint64_t column[HORIZONTAL_SIZE];
+        uint8_t asBytes[(VERTICAL_SIZE >> 3) * HORIZONTAL_SIZE];
+    } _screenBuffer;
+
     struct {
         const uint8_t* fontData;
         uint8_t width = 0;
