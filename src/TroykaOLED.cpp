@@ -159,13 +159,12 @@ void TroykaOLED::setCursor(int numX, int numY) {
     }
 }
 
-void TroykaOLED::print(char* data, int x, int y) {
-    _print(_codingCP866(data), x, y);
+void TroykaOLED::print(char character, int16_t x, int16_t y) { 
+    _print(character, x, y);
 }
 
-void TroykaOLED::print(char ch, int x, int y) {
-    char buff[2] = { ch, 0x00 };
-    _print(_codingCP866(buff), x, y);
+void TroykaOLED::print(char* data, int x, int y) {
+    _print(_codingCP866(data), x, y);
 }
 
 void TroykaOLED::print(String str, int x, int y) {
@@ -469,6 +468,45 @@ uint8_t TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
 
 uint8_t TroykaOLED::_fontRemapping(char c) {
     return pgm_read_byte(&_font.remap[(uint8_t)c]);
+}
+
+void TroykaOLED::_print(char c, int16_t x, int16_t y) {
+    uint64_t col;
+    uint8_t saveColor = WHITE;
+
+    // если инверсия фонта включена, сначала отрисовываем квадрат основным цветом
+    // а потом на него выведем инверсным цветом символ
+    if (_font.invert) {
+        drawRect(x, y, x + _font.width, y + _font.height, true, _font.color);
+        saveColor = _font.color;
+        _font.color = (_font.color == WHITE) ? BLACK : WHITE;
+    }
+
+    uint8_t offset = _fontRemapping(c);
+    // если фонт валидный и символ хотя-бы частично в пределах экрана
+    if (_font.setFont == true && x < _width && x + _font.width >= 0
+        && y < _height && y + _font.height >= 0) {
+        // для столбцов в которых будет отрисован символ
+        for (int16_t i = 0; i < _font.width; i++) {
+            // но только тех из них которые находятся в пределах экрана
+            if (x + i < _width && x + i >= 0) {
+                // создаем временный пустой столбец
+                col = 0;
+                // для каждой 8 битной страницы шрифта
+                for (int16_t j = 0; j < (_font.height >> 3); j++) {
+                    // отштамповать страницу шрифта на временный столбец
+                    col |= (uint64_t)(pgm_read_byte(&_font.data[3 + (offset * (_font.height >> 3) + j) * _font.width + i /*+ 4*/])) << (8 * j);
+                }
+                // в зависимости от "цвета" впечатываем временный столбец на реальный предварительно сдвинув
+                _stamp(x + i, y, col, _font.color);
+            }
+        }
+    }
+
+    if (_font.invert) {
+        _font.color = saveColor;
+    }
+    _change(x, x + _font.width);
 }
 
 void TroykaOLED::_interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h) {

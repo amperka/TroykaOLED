@@ -46,8 +46,8 @@ public:
     void setFont(const uint8_t* fontData);
     void setCoding(uint8_t codingName = false);
     void setCursor(int numX, int numY);
+    void print(char character, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(char* s, int x = OLED_THIS, int y = OLED_THIS);
-    void print(char ch, int x, int y);
     void print(const char* s, int x = OLED_THIS, int y = OLED_THIS);
     void print(String s, int x = OLED_THIS, int y = OLED_THIS);
     void print(int8_t n, int x = OLED_THIS, int y = OLED_THIS, uint8_t base = DEC);
@@ -111,6 +111,7 @@ private:
     void _drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color = WHITE);
     void _interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h);
     uint8_t _fontRemapping(char c);
+    void _print(char c, int16_t x, int16_t y);
     void _print(char*, int x, int y);
     char _itoa(uint8_t num);
     char* _codingCP866(char* data);
