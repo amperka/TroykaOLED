@@ -1,6 +1,14 @@
 #ifndef __DEFAULT_FONTS_H__
 #define __DEFAULT_FONTS_H__
 
+#define fontRus6x8 alfabet6x8
+#define font6x8 alfabet6x8
+#define fontRus12x10 alfabet12x16
+#define font12x10 alfabet12x16
+#define mediumNumbers digits_7seg
+#define bigNumbers digits_14x24
+#define megaNumbers digits_24x40
+
 const uint8_t alfabet_font_remap[] PROGMEM = {
     0x0e, // 00 - '.'
     0x0e, // 01 - '.'
