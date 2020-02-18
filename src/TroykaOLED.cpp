@@ -20,7 +20,7 @@ TroykaOLED::TroykaOLED(uint8_t i2cAddress, uint8_t width, uint8_t height) {
     _width = width;
     _height = height;
     _stateInvert = false;
-    _stateAutoUpdate = false;
+    _stateAutoUpdate = true;
     _imageColor = WHITE;
     _codingName = TXT_UTF8;
 }
