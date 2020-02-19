@@ -134,10 +134,10 @@ void TroykaOLED::setFont(const uint8_t* fontData) {
     }
 
     if (type == 'D') {
-        _font.remap = digits_font_remap;
+        _font.remap = digitsFontRemap;
         _font.setFont = true;
     } else if (type == 'A') {
-        _font.remap = alfabet_font_remap;
+        _font.remap = alfabetFontRemap;
         _font.setFont = true;
     } else {
         _font.setFont = false;

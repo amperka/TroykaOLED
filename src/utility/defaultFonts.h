@@ -5,11 +5,11 @@
 #define font6x8 alfabet6x8
 #define fontRus12x10 alfabet12x16
 #define font12x10 alfabet12x16
-#define mediumNumbers digits_7seg
-#define bigNumbers digits_14x24
-#define megaNumbers digits_24x40
+#define mediumNumbers digits7Seg
+#define bigNumbers digits14x24
+#define megaNumbers digits24x40
 
-const uint8_t alfabet_font_remap[] PROGMEM = {
+const uint8_t alfabetFontRemap[] PROGMEM = {
     0x0e, // 00 - '.'
     0x0e, // 01 - '.'
     0x0e, // 02 - '.'
@@ -628,7 +628,7 @@ const uint8_t alfabet12x16[] PROGMEM = {
     0x00, 0x3C, 0x7E, 0x66, 0x66, 0x7E, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // °
 };
 
-const uint8_t digits_font_remap[] PROGMEM = {
+const uint8_t digitsFontRemap[] PROGMEM = {
     0x01, // 00 - '.'
     0x01, // 01 - '.'
     0x01, // 02 - '.'
@@ -887,7 +887,7 @@ const uint8_t digits_font_remap[] PROGMEM = {
     0x01, // FF - '.'
 };
 
-const uint8_t digits_7seg[] PROGMEM = {
+const uint8_t digits7Seg[] PROGMEM = {
     0x0C, // w 12
     0x10, // h 16
     'D', // type
@@ -907,7 +907,7 @@ const uint8_t digits_7seg[] PROGMEM = {
     0x00, 0xFC, 0x7A, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x7A, 0xFC, 0x00, 0x00, 0x00, 0x81, 0xC3, 0xC3, 0xC3, 0xC3, 0xC3, 0xC3, 0xBD, 0x7E, 0x00, // 12 '9'
 };
 
-const uint8_t digits_14x24[] PROGMEM = {
+const uint8_t digits14x24[] PROGMEM = {
     0x0E, // w 14
     0x18, // h 24
     'D', // type
@@ -928,7 +928,7 @@ const uint8_t digits_14x24[] PROGMEM = {
     0
 };
 
-const uint8_t digits_24x40[] PROGMEM = {
+const uint8_t digits24x40[] PROGMEM = {
     0x18, // w 24
     0x28, // h 40
     'D', // type
