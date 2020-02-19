@@ -18,7 +18,6 @@ void setup() {
     // инвертируем последующий текст
     myOLED.invertText("true");
     myOLED.print("OLED", 40, 40);
-    myOLED.update();
 }
 
 void loop() {

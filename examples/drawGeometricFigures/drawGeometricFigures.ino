@@ -17,7 +17,6 @@ void setup() {
     myOLED.drawCircle(width / 2, height / 2, 30);
     // рисуем диск (закрашенную окружность) в центре дисплея и радиусом 20
     myOLED.drawCircle(width / 2, height / 2, 20, true);
-    myOLED.update();
 }
 
 void loop() {

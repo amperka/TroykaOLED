@@ -19,7 +19,6 @@ void setup() {
     myOLED.setFont(alfabet12x16);
     // печатаем строку с координатами начала текста
     myOLED.print("Амперка", OLED_CENTER, 20);
-    myOLED.update();
 }
 
 void loop() {
