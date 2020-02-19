@@ -444,8 +444,8 @@ void TroykaOLED::drawImage(const uint8_t* image, int16_t x, int16_t y, uint8_t m
             _stamp(_last.x + i, _last.y, col, _imageColor);
         }
     }
-    _last.x += w;
     _change(_last.x, _last.x + w);
+    _last.x += w;
     _AUTO_UPDATE();
 }
 
