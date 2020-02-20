@@ -10,11 +10,6 @@
 
 #include "TroykaOLED.h"
 
-#define _AUTO_UPDATE()      \
-    if (_stateAutoUpdate) { \
-        update();           \
-    }
-
 TroykaOLED::TroykaOLED(uint8_t i2cAddress, uint8_t width, uint8_t height) {
     _i2cAddress = i2cAddress;
     _width = width;
@@ -102,7 +97,9 @@ void TroykaOLED::setBrightness(uint8_t brightness) {
 void TroykaOLED::clearDisplay() {
     memset(_screenBuffer.asBytes, 0, _width * _height / 8);
     _change(0, _width - 1);
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
 }
 
 void TroykaOLED::invertDisplay(bool stateInvert) {
@@ -297,14 +294,18 @@ void TroykaOLED::print(double number, int16_t x, int16_t y, uint8_t sum) {
 
 void TroykaOLED::drawPixel(int16_t x, int16_t y, uint8_t color) {
     _drawPixel(x, y, color);
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
     _last.x = x;
     _last.y = y;
 }
 
 void TroykaOLED::drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color) {
     _drawLine(x1, y1, x2, y2, color);
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
     _last.x = x2;
     _last.y = y2;
 }
@@ -365,7 +366,9 @@ void TroykaOLED::drawRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2, bool f
             }
         }
     }
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
 }
 
 void TroykaOLED::drawCircle(int16_t x, int16_t y, uint8_t r, bool fill, uint8_t color) {
@@ -413,7 +416,9 @@ void TroykaOLED::drawCircle(int16_t x, int16_t y, uint8_t r, bool fill, uint8_t 
         x1++;
         p += x1 * 2;
     }
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
     _last.x = x;
     _last.y = y;
 }
@@ -446,7 +451,9 @@ void TroykaOLED::drawImage(const uint8_t* image, int16_t x, int16_t y, uint8_t m
     }
     _change(_last.x, _last.x + w);
     _last.x += w;
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
 }
 
 uint8_t TroykaOLED::getPixel(int16_t x, int16_t y) {
@@ -569,7 +576,9 @@ void TroykaOLED::_print(char* line, int16_t x, int16_t y) {
             _print(line[i], currentX, _last.y);
         }
     }
-    _AUTO_UPDATE();
+    if (_stateAutoUpdate) {
+        update();
+    }
 }
 
 //  параметр: одна цифра от 0 до 15
