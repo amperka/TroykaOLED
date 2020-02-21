@@ -228,7 +228,7 @@ void TroykaOLED::_radixConverter(uint32_t number, bool sign, uint8_t bits,
         break;
     }
     if (number == 0) {
-        print("0");
+        print("0", x, y);
         return;
     }
     char dig[bits + 1];
