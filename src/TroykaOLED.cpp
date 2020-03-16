@@ -366,6 +366,7 @@ void TroykaOLED::drawRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2, bool f
             }
         }
     }
+    _change(xStart, xEnd);
     if (_stateAutoUpdate) {
         update();
     }
