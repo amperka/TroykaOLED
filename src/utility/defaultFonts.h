@@ -1,15 +1,15 @@
 #ifndef __DEFAULT_FONTS_H__
 #define __DEFAULT_FONTS_H__
 
-#define fontRus6x8 alfabet6x8
-#define font6x8 alfabet6x8
-#define fontRus12x10 alfabet12x16
-#define font12x10 alfabet12x16
+#define fontRus6x8 alphabet6x8
+#define font6x8 alphabet6x8
+#define fontRus12x10 alphabet12x16
+#define font12x10 alphabet12x16
 #define mediumNumbers digits7Seg
 #define bigNumbers digits14x24
 #define megaNumbers digits24x40
 
-const uint8_t alfabetFontRemap[] PROGMEM = {
+const uint8_t alphabetFontRemap[] PROGMEM = {
     0x0e, // 00 - '.'
     0x0e, // 01 - '.'
     0x0e, // 02 - '.'
@@ -268,7 +268,7 @@ const uint8_t alfabetFontRemap[] PROGMEM = {
     0x0e, // FF - '.'
 };
 
-const uint8_t alfabet6x8[] PROGMEM = {
+const uint8_t alphabet6x8[] PROGMEM = {
     0x06, // w 6
     0x08, // h 8
     'A', // type
@@ -448,7 +448,7 @@ const uint8_t alfabet6x8[] PROGMEM = {
     0x00, 0x00, 0x06, 0x09, 0x09, 0x06, // 90 °
 };
 
-const uint8_t alfabet12x16[] PROGMEM = {
+const uint8_t alphabet12x16[] PROGMEM = {
     0x0C, // w 12
     0x10, // h 16
     'A', // type
