@@ -155,13 +155,13 @@ void TroykaOLED::print(char character, int16_t x, int16_t y) {
 }
 
 void TroykaOLED::print(char* line, int16_t x, int16_t y) {
-    _print(_codingCP866((uint8_t*)line), x, y);
+    _print(_encodeToCP866((uint8_t*)line), x, y);
 }
 
 void TroykaOLED::print(String str, int16_t x, int16_t y) {
     char data[str.length() + 1];
     str.toCharArray(data, str.length() + 1);
-    _print(_codingCP866((uint8_t*)data), x, y);
+    _print(_encodeToCP866((uint8_t*)data), x, y);
 }
 
 void TroykaOLED::print(const char* line, int16_t x, int16_t y) {
@@ -169,7 +169,7 @@ void TroykaOLED::print(const char* line, int16_t x, int16_t y) {
     for (uint8_t i = 0; i <= strlen(line); i++) {
         data[i] = line[i];
     }
-    _print(_codingCP866((uint8_t*)data), x, y);
+    _print(_encodeToCP866((uint8_t*)data), x, y);
 }
 
 void TroykaOLED::print(int8_t number, int16_t x, int16_t y, uint8_t base) {
@@ -475,7 +475,7 @@ uint8_t TroykaOLED::getImageHeight(const uint8_t* image, uint8_t mem) {
     return (mem == IMG_RAM) ? image[1] : pgm_read_byte(&image[1]);
 }
 
-uint8_t TroykaOLED::_fontRemapping(char c) {
+uint8_t TroykaOLED::_charToGlyph(char c) const {
     return pgm_read_byte(&_font.remap[(uint8_t)c]);
 }
 
@@ -491,7 +491,7 @@ void TroykaOLED::_print(char c, int16_t x, int16_t y) {
         _font.color = (_font.color == WHITE) ? BLACK : WHITE;
     }
 
-    uint8_t offset = _fontRemapping(c);
+    uint8_t offset = _charToGlyph(c);
     // если фонт валидный и символ хотя-бы частично в пределах экрана
     if (_font.setFont == true && x < _width && x + _font.width >= 0
         && y < _height && y + _font.height >= 0) {

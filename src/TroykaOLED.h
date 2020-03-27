@@ -118,7 +118,7 @@ private:
     void _interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h);
     uint8_t _punchDigits(uint32_t n, char* d, uint8_t p, uint8_t b);
     void _radixConverter(uint32_t num, bool sign, uint8_t bits, uint8_t base, int16_t x, int16_t y);
-    uint8_t _fontRemapping(char c);
+    uint8_t _charToGlyph(char c) const;
     void _print(char c, int16_t x, int16_t y);
     void _print(char* s, int16_t x, int16_t y);
     char _itoa(uint8_t num);
