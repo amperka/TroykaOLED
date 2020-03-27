@@ -17,7 +17,7 @@ TroykaOLED::TroykaOLED(uint8_t i2cAddress, uint8_t width, uint8_t height) {
     _stateInvert = false;
     _stateAutoUpdate = true;
     _imageColor = WHITE;
-    _codingName = TXT_UTF8;
+    _codingName = Encoding::UTF8;
 }
 
 void TroykaOLED::begin(TwoWire* wire) {
@@ -143,7 +143,7 @@ void TroykaOLED::setFont(const uint8_t* fontData) {
     _font.color = WHITE;
 }
 
-void TroykaOLED::setCoding(uint8_t codingName) { _codingName = codingName; }
+void TroykaOLED::setCoding(Encoding codingName) { _codingName = codingName; }
 
 void TroykaOLED::setCursor(int16_t x, int16_t y) {
     _last.x = x;
@@ -586,7 +586,7 @@ void TroykaOLED::_print(char* line, int16_t x, int16_t y) {
 //  преобразуем цифры 0-9 в символ с кодом 48-57, а цифры 10-15 в символ с кодом 65-71
 char TroykaOLED::_itoa(uint8_t number) { return uint8_t(number + (number < 10 ? '0' : 'A')); }
 
-char* TroykaOLED::_codingCP866(uint8_t* strIn) {
+char* TroykaOLED::_encodeToCP866(uint8_t* strIn) {
     // определяем строку для вывода результата
     uint8_t* strOut = strIn;
     // переменненые для хранения номера сивола в строках strIn и strOut
@@ -595,7 +595,7 @@ char* TroykaOLED::_codingCP866(uint8_t* strIn) {
     uint8_t charThis = strIn[0], charNext = strIn[1];
     switch (_codingName) {
     // преобразуем текст из кодировки UTF-8:
-    case TXT_UTF8:
+    case Encoding::UTF8:
         while (charThis > 0 && numIn < 0xFF) {
             // если код текущего символа равен 208, а за ним следует символ с кодом
             // 144...191 значит это буква «А»...«п» требующая преобразования к коду
@@ -633,7 +633,7 @@ char* TroykaOLED::_codingCP866(uint8_t* strIn) {
         strOut[numOut] = 0;
         break;
     //преобразуем текст из кодировки WINDOWS-1251:
-    case TXT_WIN1251:
+    case Encoding::CP1251:
         // если код текущего символа строки strIn больше 0 и номер текушего символа
         // строки strIn меньше 255
         while (charThis > 0 && numIn < 0xFF) {

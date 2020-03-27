@@ -30,6 +30,12 @@ constexpr int16_t INVERSE = 2;
 constexpr uint8_t HORIZONTAL_SIZE = 128;
 constexpr uint8_t VERTICAL_SIZE = 64;
 
+enum class Encoding {
+    CP866,
+    UTF8,
+    CP1251  
+};
+
 class TroykaOLED {
 public:
     TroykaOLED(uint8_t address = 0x3C, uint8_t width = HORIZONTAL_SIZE, uint8_t height = VERTICAL_SIZE);
@@ -44,7 +50,7 @@ public:
     void textColor(uint8_t color = WHITE);
     void imageColor(uint8_t color = WHITE);
     void setFont(const uint8_t* fontData);
-    void setCoding(uint8_t codingName = false);
+    void setCoding(Encoding codingName);
     void setCursor(int numX, int numY);
     void print(char character, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(char* line, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
@@ -82,7 +88,7 @@ private:
         int16_t y;
     } _last;
 
-    uint8_t _codingName;
+    Encoding _codingName;
     bool _stateInvert;
     bool _stateAutoUpdate;
     uint8_t _imageColor;
@@ -116,7 +122,7 @@ private:
     void _print(char c, int16_t x, int16_t y);
     void _print(char* s, int16_t x, int16_t y);
     char _itoa(uint8_t num);
-    char* _codingCP866(uint8_t* data);
+    char* _encodeToCP866(uint8_t* data);
     void _sendCommand(uint8_t command);
     void _sendCommand(uint8_t command, uint8_t value);
     void _sendCommand(uint8_t command, uint8_t value1, uint8_t value2);
