@@ -7,10 +7,10 @@ TroykaOLED myOLED(0x3C);
 void setup() {
     // инициализируем дисплей
     myOLED.begin();
-    // выбираем кодировку символов: CP866, TXT_UTF8 или WIN1251
-    myOLED.setCoding(TXT_UTF8);
-    //myOLED.setCoding(TXT_CP866);
-    //myOLED.setCoding(TXT_WIN1251);
+    // выбираем кодировку символов: CP866, UTF8 или CP1251
+    myOLED.setCoding(Encode::UTF8);
+    //myOLED.setCoding(Encode::CP866);
+    //myOLED.setCoding(Encode::CP1251);
     // выбираем шрифт 6×8
     myOLED.setFont(alphabet6x8);
     // печатаем строку с координатами начала текста
