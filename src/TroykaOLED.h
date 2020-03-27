@@ -77,6 +77,11 @@ public:
     uint8_t getImageWidth(const uint8_t* image, uint8_t mem = IMG_ROM);
     uint8_t getImageHeight(const uint8_t* image, uint8_t mem = IMG_ROM);
 
+    // deprecated methods for compatibility
+    void setBrigtness(uint8_t brigtness) { setBrightness(brigtness); }
+    void bgText(bool stateTextBG = true) { textColor(stateTextBG); }
+    void bgImage(bool stateImageBG = true) { imageColor(stateImageBG); }
+
 private:
     TwoWire* _wire;
     uint8_t _i2cAddress;

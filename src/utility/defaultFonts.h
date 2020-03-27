@@ -1,6 +1,7 @@
 #ifndef __DEFAULT_FONTS_H__
 #define __DEFAULT_FONTS_H__
 
+// replace deprecated font names for compatibility
 #define fontRus6x8 alphabet6x8
 #define font6x8 alphabet6x8
 #define fontRus12x10 alphabet12x16
