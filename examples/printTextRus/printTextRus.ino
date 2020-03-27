@@ -5,22 +5,21 @@
 TroykaOLED myOLED(0x3C);
 
 void setup() {
-  // инициализируем дисплей
-  myOLED.begin();
-  // выбираем кодировку символов: CP866, TXT_UTF8 или WIN1251
-  myOLED.setCoding(TXT_UTF8);
-  //myOLED.setCoding(TXT_CP866);
-  //myOLED.setCoding(TXT_WIN1251);
-  // выбираем шрифт 6×8 с поддержкой кириллицы
-  myOLED.setFont(fontRus6x8);
-  // печатаем строку с координатами начала текста
-  myOLED.print("Привет мир!", OLED_CENTER, 10);
-  // выбираем шрифт 12×10 с поддержкой кириллицы
-  myOLED.setFont(fontRus12x10);
-  // печатаем строку с координатами начала текста
-  myOLED.print("Амперка", OLED_CENTER, 20);
+    // инициализируем дисплей
+    myOLED.begin();
+    // выбираем кодировку символов: CP866, UTF8 или CP1251
+    myOLED.setCoding(Encoding::UTF8);
+    //myOLED.setCoding(Encoding::CP866);
+    //myOLED.setCoding(Encoding::CP1251);
+    // выбираем шрифт 6×8
+    myOLED.setFont(alphabet6x8);
+    // печатаем строку с координатами начала текста
+    myOLED.print("Привет мир!", OLED_CENTER, 10);
+    // выбираем шрифт 12×16
+    myOLED.setFont(alphabet12x16);
+    // печатаем строку с координатами начала текста
+    myOLED.print("Амперка", OLED_CENTER, 20);
 }
 
 void loop() {
-
 }

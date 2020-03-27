@@ -14,13 +14,14 @@ TroykaOLED	KEYWORD1
 
 begin 				KEYWORD2
 update 				KEYWORD2
+updateAll			KEYWORD2
 autoUpdate 			KEYWORD2
-setBrigtness 		KEYWORD2
+setBrightness 		KEYWORD2
 clearDisplay 		KEYWORD2
 invertDisplay 		KEYWORD2
 invertText 			KEYWORD2
-bgText 				KEYWORD2
-bgImage				KEYWORD2
+textColor			KEYWORD2
+imageColor			KEYWORD2
 setFont 			KEYWORD2
 setCoding 			KEYWORD2
 setCursor 			KEYWORD2
@@ -32,7 +33,7 @@ drawCircle 			KEYWORD2
 drawImage 			KEYWORD2
 getPixel 			KEYWORD2
 getWidth 			KEYWORD2
-getHeigth 			KEYWORD2
+getHeight 			KEYWORD2
 getFontWidth 		KEYWORD2
 getFontHeight 		KEYWORD2
 getImageWidth 		KEYWORD2
@@ -53,3 +54,6 @@ IMG_ROM	LITERAL1
 TXT_UTF8	LITERAL1
 TXT_CP866	LITERAL1
 TXT_WIN1251	LITERAL1
+BLACK	LITERAL1
+WHITE	LITERAL1
+INVERSE	LITERAL1
