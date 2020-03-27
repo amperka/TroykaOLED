@@ -70,20 +70,20 @@ void TroykaOLED::begin(TwoWire* wire) {
 
 // обновление только измененных столбцов
 void TroykaOLED::update() {
-    if (changed.right > -1 || changed.left < _width + 2) {
-        changed.left = changed.left < 0 ? 0 : changed.left;
-        changed.right = changed.right > _width - 1 ? _width - 1 : changed.right;
-        _sendColumns(changed.left, changed.right);
-        changed.left = _width + 2;
-        changed.right = -1;
+    if (_changedColumns.right > -1 || _changedColumns.left < _width + 2) {
+        _changedColumns.left = _changedColumns.left < 0 ? 0 : _changedColumns.left;
+        _changedColumns.right = _changedColumns.right > _width - 1 ? _width - 1 : _changedColumns.right;
+        _sendColumns(_changedColumns.left, _changedColumns.right);
+        _changedColumns.left = _width + 2;
+        _changedColumns.right = -1;
     }
 }
 
 // обновление всех столбцов
 void TroykaOLED::updateAll() {
     _sendColumns(0, _width - 1);
-    changed.left = _width + 2;
-    changed.right = -1;
+    _changedColumns.left = _width + 2;
+    _changedColumns.right = -1;
 }
 
 void TroykaOLED::autoUpdate(bool stateAutoUpdate) {
@@ -96,7 +96,7 @@ void TroykaOLED::setBrightness(uint8_t brightness) {
 
 void TroykaOLED::clearDisplay() {
     memset(_screenBuffer.asBytes, 0, _width * _height / 8);
-    _change(0, _width - 1);
+    _markChangedColumns(0, _width - 1);
     if (_stateAutoUpdate) {
         update();
     }
@@ -366,7 +366,7 @@ void TroykaOLED::drawRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2, bool f
             }
         }
     }
-    _change(xStart, xEnd);
+    _markChangedColumns(xStart, xEnd);
     if (_stateAutoUpdate) {
         update();
     }
@@ -450,7 +450,7 @@ void TroykaOLED::drawImage(const uint8_t* image, int16_t x, int16_t y, uint8_t m
             _stamp(_last.x + i, _last.y, col, _imageColor);
         }
     }
-    _change(_last.x, _last.x + w);
+    _markChangedColumns(_last.x, _last.x + w);
     _last.x += w;
     if (_stateAutoUpdate) {
         update();
@@ -515,7 +515,7 @@ void TroykaOLED::_print(char c, int16_t x, int16_t y) {
     if (_font.invert) {
         _font.color = saveColor;
     }
-    _change(x, x + _font.width);
+    _markChangedColumns(x, x + _font.width);
 }
 
 void TroykaOLED::_interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h) {
@@ -690,7 +690,7 @@ void TroykaOLED::_stamp(int16_t x, int16_t y, uint64_t body, uint8_t color) {
 
 void TroykaOLED::_drawPixel(int16_t x, int16_t y, uint8_t color) {
     _stamp(x, y, 1, color);
-    _change(x - 1, x + 1);
+    _markChangedColumns(x - 1, x + 1);
 }
 
 void TroykaOLED::_drawLine(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color) {
@@ -744,12 +744,12 @@ void TroykaOLED::_sendCommand(uint8_t command, uint8_t value1, uint8_t value2) {
 }
 
 // контролируем в пределах каких столбцов происходили изменения чтобы не перерисовывать все
-void TroykaOLED::_change(int16_t left, int16_t right) {
-    if (left < changed.left) {
-        changed.left = left;
+void TroykaOLED::_markChangedColumns(int16_t left, int16_t right) {
+    if (left < _changedColumns.left) {
+        _changedColumns.left = left;
     }
-    if (right > changed.right) {
-        changed.right = right;
+    if (right > _changedColumns.right) {
+        _changedColumns.right = right;
     }
 }
 
