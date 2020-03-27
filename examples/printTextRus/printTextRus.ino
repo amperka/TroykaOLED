@@ -8,9 +8,9 @@ void setup() {
     // инициализируем дисплей
     myOLED.begin();
     // выбираем кодировку символов: CP866, UTF8 или CP1251
-    myOLED.setCoding(Encode::UTF8);
-    //myOLED.setCoding(Encode::CP866);
-    //myOLED.setCoding(Encode::CP1251);
+    myOLED.setCoding(Encoding::UTF8);
+    //myOLED.setCoding(Encoding::CP866);
+    //myOLED.setCoding(Encoding::CP1251);
     // выбираем шрифт 6×8
     myOLED.setFont(alphabet6x8);
     // печатаем строку с координатами начала текста
