@@ -516,6 +516,7 @@ void TroykaOLED::_print(char c, int16_t x, int16_t y) {
         _font.color = saveColor;
     }
     _markChangedColumns(x, x + _font.width);
+    _last.x = x + _font.width;
 }
 
 void TroykaOLED::_interpretParameters(int16_t x, int16_t y, int16_t w, int16_t h) {
