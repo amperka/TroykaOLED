@@ -154,10 +154,6 @@ void TroykaOLED::print(char character, int16_t x, int16_t y) {
     _print(character, x, y);
 }
 
-void TroykaOLED::print(char* line, int16_t x, int16_t y) {
-    _print(_encodeToCP866((uint8_t*)line), x, y);
-}
-
 void TroykaOLED::print(String str, int16_t x, int16_t y) {
     char data[str.length() + 1];
     str.toCharArray(data, str.length() + 1);
