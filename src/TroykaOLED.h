@@ -51,7 +51,7 @@ public:
     void imageColor(uint8_t color = WHITE);
     void setFont(const uint8_t* fontData);
     void setCoding(Encoding codingName);
-    void setCursor(int numX, int numY);
+    void setCursor(int16_t numX, int16_t numY);
     void print(char character, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(char* line, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(const char* line, int16_t x = OLED_THIS, int16_t y = OLED_THIS);

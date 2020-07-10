@@ -665,6 +665,8 @@ char* TroykaOLED::_encodeToCP866(uint8_t* strIn) {
         }
         strOut[numOut] = 0;
         break;
+    default:
+        break;
     }
     // возвращаем строку strOut
     return (char*)strOut;
