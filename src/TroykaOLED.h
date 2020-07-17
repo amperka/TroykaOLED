@@ -53,7 +53,6 @@ public:
     void setCoding(Encoding codingName);
     void setCursor(int16_t numX, int16_t numY);
     void print(char character, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
-    void print(char* line, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(const char* line, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(String s, int16_t x = OLED_THIS, int16_t y = OLED_THIS);
     void print(int8_t n, int16_t x = OLED_THIS, int16_t y = OLED_THIS, uint8_t base = DEC);
